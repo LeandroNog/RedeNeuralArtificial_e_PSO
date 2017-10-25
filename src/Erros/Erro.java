@@ -22,7 +22,6 @@ public class Erro {
     //Analise de correlação - real x estimado
     private double coeficienteDeDeterminacao;
     
-    
     public Erro(ArrayList<Double> valorEsperado, ArrayList<Double> respostas){
         double soma = 0.0;
         double media = 0.0;
@@ -112,10 +111,6 @@ public class Erro {
         this.coeficienteDeDeterminacao = coeficienteDeDeterminacao;
     }
     
-    
-    
-    
-    
-    
+
     
 }

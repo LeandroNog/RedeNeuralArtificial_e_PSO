@@ -6,6 +6,7 @@
 package RedeNeural;
 
 import DadosNormalizados.DadosNormalizados;
+import DadosNormalizados.InstanciaNormalizada;
 import Erros.Erro;
 import static java.lang.Math.exp;
 import java.util.ArrayList;
@@ -77,20 +78,31 @@ public class Rede {
     }
     
     
-    public double propagaSinal(){
+    public double propagaSinal(InstanciaNormalizada instancia){
         double saida=0.0;
-        int i, j, l;
+        int i, j, l, c;
         
         //Primeira camada
         for(i = 0 ; i<this.getNumNeuronioCamada().get(0) ; i++){
             for(j = 0; j < this.getNumEntradas(); j++){
                 
-                saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j);
-                //sigmoide.....
+                saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)*instancia.getListAtributos().get(j).getValor();
+                saida = fncIA_MLP_sigmoide(saida);
                 
             }
+            this.getCamadas().get(0).getListNeuronios().get(i).setSaida(saida);
         }
+        //Outras camadas
+        for(c = 1; c<this.getNumCamadas();c++){
+            for(i = 0 ; i<this.getNumNeuronioCamada().get(c) ; i++){
+                for(j = 0; j < this.getNumNeuronioCamada().get(c-1); j++){
+                    saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)*this.getCamadas().get(c-1).getListNeuronios().get(j).getSaida();
+                    saida = fncIA_MLP_sigmoide(saida);
+                }
+            this.getCamadas().get(i).getListNeuronios().get(i).setSaida(saida);
+            }
         
+        }
         
         
         
@@ -104,12 +116,24 @@ public class Rede {
     public Erro executaTeste(DadosNormalizados dados){
         ArrayList<Double> saida = new ArrayList<>();
         ArrayList<Double> esperado = new ArrayList<>();
-        Erro erroTeste = new Erro(esperado, saida);
+        Double respostaRede;
+        int i, j;
         
-        
+        for(i=0;i<dados.getNumInstancias();i++){
+            //Propaga instancia
+            this.propagaSinal(dados.getListInstancias().get(i));
+            respostaRede = this.getCamadas().get(this.getNumCamadas()-1).getListNeuronios().get(this.getNumNeuronioCamada().get(this.getNumCamadas())).getSaida();
+            saida.add(respostaRede);
+            esperado.add(dados.getListInstancias().get(i).getEsperado());
+            
+            
+            
+        }
   
         
+        Erro erroTeste = new Erro(esperado, saida);
         
+
         
         return erroTeste;
         
@@ -119,12 +143,15 @@ public class Rede {
     public Erro executaAlgoritmodeAprendizado(DadosNormalizados dados){
         ArrayList<Double> saida = new ArrayList<>();
         ArrayList<Double> esperado = new ArrayList<>();
+        
+        
+        
+        
+        
+        
+        
+        
         Erro erroTreinamento = new Erro(esperado, saida);
-        
-        
-  
-      
-        
         return erroTreinamento;
     }
     
