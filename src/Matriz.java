@@ -1,3 +1,6 @@
+
+import static java.lang.Math.pow;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -228,8 +231,8 @@ Double tadMatriz_Det(double a[][], int n) {
   double [][]m = new double[n-1][n-1];
 
   if (n < 1) { /* Error */
-    printf("ERRO: Calculo do Determinante de uma matriz com numero de linhas menor que 1!\n");
-    exit(0);
+    System.out.println("ERRO: Calculo do Determinante de uma matriz com numero de linhas menor que 1!\n");
+    //exit();
   } else if (n == 1) { /* Shouldn't get used */
     det = a[0][0];
   } else if (n == 2) {
@@ -237,10 +240,7 @@ Double tadMatriz_Det(double a[][], int n) {
   } else {
     det = 0;
     for (j1=0; j1<n; j1++) {
-      m = (double**)malloc((n-1)*sizeof(double *));
-      for (i=0; i<(n-1); i++) {
-        m[i] = (double*)malloc((n-1)*sizeof(double));
-      }
+        m = new double[n-1][n-1];
       
       for (i=1; i<n; i++) {
         j2 = 0;
@@ -254,18 +254,18 @@ Double tadMatriz_Det(double a[][], int n) {
       det += pow(-1.0,j1+2.0) * a[0][j1] * tadMatriz_Det(m, n-1);
       
       for (i=0; i<(n-1); i++) {
-        free(m[i]);
+        //free(m[i]);
       }
-      free(m);
+      //free(m);
     }
   }
   return(det);
 }
 
 // Calcula matriz inversa
-void tadMatriz_Inverse(double** a, double **d, int n, long double det){
+void tadMatriz_Inverse(double a[][], double d[][], int n, double det){
   if (det == 0.0) {
-    printf("\nNao existe matriz inversa\n");
+    //printf("\nNao existe matriz inversa\n");
   }
   else if (n == 1) {
     d[0][0] = 1;
@@ -276,11 +276,65 @@ void tadMatriz_Inverse(double** a, double **d, int n, long double det){
 }
 
 
+//Calcula cofator da matriz
+public void tadMatriz_Cofactor(double a[][], double d[][], double n, double determinte){
+    double [][]b = new double[(int)n][(int)n];
+    double [][]c = new double[(int)n][(int)n];
+  
+  int l, h, m, k, i, j;
+  for (h=0; h<n; h++) {
+    for (l=0; l<n; l++) {
+      m = 0;
+      k = 0;
+      for (i=0; i<n; i++) {
+        for (j=0; j<n; j++) {
+          if (i != h && j != l){
+            b[m][k] = a[i][j];
+            if (k < (n-2)) {
+              k++;
+            }
+            else {
+              k = 0;
+              m++;
+            }
+          }
+        }
+      }
+      c[h][l] = pow(-1,(h+l)) * tadMatriz_Det(b, (int)(n-1)); // c = cofactor da matriz
+    }
+  }
+  tadMatriz_Transpose(c, d, n, determinte);
+}
 
+void tadMatriz_ImprimeMatriz(int numLinhas, int numColunas, double matriz[][]){
+  for (int i=0; i<numLinhas; i++) {
+    for (int j=0; j<numColunas; j++) {
+      System.out.print(matriz[i][j]);
+    }
+    System.out.print("\n");
+  }
+}
 
+//  Calcula transposta da matriz e resulta na inversa
+public void tadMatriz_Transpose(double c[][], double d[][], double n, double det){
+  int i,j;
+  double[][] b = new double[100][100];
+  
+  for (i=0; i<n; i++) {
+    for (j=0; j<n; j++) {
+      b[i][j] = c[j][i];
+    }
+  }
+  for (i=0; i<n; i++) {
+    for (j=0; j<n; j++) {
+      d[i][j] = b[i][j]/det;  // array d[][] = matriz inversa
+    }
+  }
+}
 
-
-
+public boolean tadMatriz_Singular(double a[][], int n) {
+  return true;
+}
 
 
 }
