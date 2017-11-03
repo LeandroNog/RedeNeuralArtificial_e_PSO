@@ -1,3 +1,5 @@
+package Matriz;
+
 
 import static java.lang.Math.pow;
 
@@ -14,13 +16,52 @@ import static java.lang.Math.pow;
 public class Matriz {
     //VERIFICAR SE PASSAGEM DAS MATRIZES ESTA SENDO POR REFERENCIA OU COPIA
     
+    double[][] matriz;
+    int l, c;
     
-    int i, j, k;
-    public void tadMatriz_DecomposicaoLU(int n, double A[][], double l[][], double u[][]) {
+    public Matriz(int l, int c){
+        matriz = new double[l][c];
+        this.l = l;
+        this.c=c;
+    }
+
+    public double[][] getMatriz() {
+        return matriz;
+    }
+
+    public void setMatriz(double[][] matriz) {
+        this.matriz = matriz;
+    }
+
+    public int getL() {
+        return l;
+    }
+
+    public void setL(int l) {
+        this.l = l;
+    }
+
+    public int getC() {
+        return c;
+    }
+
+    public void setC(int c) {
+        this.c = c;
+    }
+    
+    
+    
+    
+
+    public void tadMatriz_DecomposicaoLU(int n, double A[][], Matriz l, Matriz u) {
+        int i, j, k;
         double[][] a = new double[n][n];
+        double[][] lCop = new double[n][n];
+        double[][] uCop = new double[n][n];
+        double num = 0.0;
         for (i = 0; i < n; i++){
-            for (int j = 0; j < n; j++){
-                a[i][j] = A[i][j];
+            for (j = 0; j < n; j++){
+                a[i][j] =  A[i][j];
             }
         }
         for (j = 0; j < n; ++j) {
@@ -47,20 +88,29 @@ public class Matriz {
         
         for (j=0; j<n; ++j) {
           for(i=0; i<=j; ++i) {
-            u[i][j] = a[i][j];
+            uCop[i][j] = a[i][j];
           }
         }
 
         for (i=0; i<n; i++) {
           for(j=0; j<=i; j++) {
-            if(i==j) l[i][j] = 1;
-            else l[i][j] = a[i][j];
+            if(i==j) {
+                num = 1;
+            }
+            else{
+                num = a[i][j];
+            }
+            lCop[i][j] = num;
+            System.out.println(l.getMatriz()[i][j]);
           }
         }
+        
 
 
 
     }
+    l.setMatriz(lCop);
+    u.setMatriz(uCop);
         
     
     }
@@ -75,7 +125,7 @@ public double tadMatriz_Det_U(int n, double U[][]) {
 
 
 // ??? Pra que serve ???
-double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], double U[][], double B[]){
+public double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], double U[][], double B[]){
   int i, j, k;
   
   double []X = new double[n];
@@ -106,13 +156,13 @@ double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], double U[][
 }
 
 
-double[][] tadMatriz_Transposta(int l, int c,double matriz1[][]) {
+public double[][] tadMatriz_Transposta() {
   int i, j, aux;
-  double[][] matriz2 = new double[l][c];
+  double[][] matriz2 = new double[this.getL()][this.getC()];
   
   for (i=0; i<l; i++) {
     for (j=0; j<c; j++) {
-      matriz2[j][i] = matriz1[i][j];
+      matriz2[j][i] = this.getMatriz()[i][j];
     }
   }
   
@@ -120,7 +170,7 @@ double[][] tadMatriz_Transposta(int l, int c,double matriz1[][]) {
 }
 
 // Cria a matriz identidade de tamanho [NxN].
-double[][] tadMatriz_Identidade(int n) {
+public double[][] tadMatriz_Identidade(int n) {
   double[][] b = new double[n][n];
   
   for (int i=0; i<n; i++){
@@ -139,7 +189,7 @@ double[][] tadMatriz_Identidade(int n) {
 
 
 // Efetua o calculo da matriz resultante da soma de duas matrizes.
-double[][] tadMatriz_Soma(int l, int c,double matriz1[][], double matriz2[][]) {
+public double[][] tadMatriz_Soma(int l, int c,double matriz1[][], double matriz2[][]) {
   int i, j;
   
    double[][] matriz3 = new double[l][c];
@@ -155,7 +205,7 @@ double[][] tadMatriz_Soma(int l, int c,double matriz1[][], double matriz2[][]) {
 
 
 // Efetua a multiplicacao de duas matrizes, retornando uma terceria matriz como resultado.
-double[][] tadMatriz_Multiplica(int numLinhasM1,int numColunasM1, int numColunasM2, double matriz1[][], double matriz2[][]){
+public double[][] tadMatriz_Multiplica(int numLinhasM1,int numColunasM1, int numColunasM2, double matriz1[][], double matriz2[][]){
  
   double[][] matriz3 = new double[numLinhasM1][numColunasM2];
 /*
@@ -182,7 +232,7 @@ double[][] tadMatriz_Multiplica(int numLinhasM1,int numColunasM1, int numColunas
 
 
 // Efetua a multiplicacao de uma matriz por uma constante, retornando uma nova matriz como resultado.
-double[][] tadMatriz_MultiplicaConstante(int numLinhas, int numColunas, double matriz1[][], double constante) {
+public double[][] tadMatriz_MultiplicaConstante(int numLinhas, int numColunas, double matriz1[][], double constante) {
   double[][] matriz3 = new double[numLinhas][numColunas];
   for (int i=0; i<numLinhas; i++){
     for (int j=0; j<numColunas; j++){
@@ -200,22 +250,23 @@ double[][] tadMatriz_Inversa(int numLinhas, int numColunas, double matriz[][]){
   double deter;
 
   int num_Pesos = numLinhas;
+ 
   
-  double[][] matriz3 = new double[numLinhas][numColunas];
-  double[][] L = new double[num_Pesos][num_Pesos];
-  double[][] U = new double[num_Pesos][num_Pesos];
 
+  Matriz L = new Matriz(num_Pesos, num_Pesos);
+  Matriz U = new Matriz(num_Pesos, num_Pesos);
+  double[][] matriz3 = new double[num_Pesos][num_Pesos];
 
   this.tadMatriz_DecomposicaoLU(numLinhas, matriz, L, U);
   /*printf("MATRIZ l\n");
   tadMatriz_ImprimeMatriz(num_Pesos, num_Pesos, U);*/
         
-    double detHessiana = tadMatriz_Det_U(num_Pesos,U);
+    double detHessiana = tadMatriz_Det_U(num_Pesos,U.getMatriz());
     //printf("%.20f\n", detHessiana);
 
 
 
-
+    
   //deter = tadMatriz_Det(matriz, numLinhas);
 
   
@@ -306,7 +357,7 @@ public void tadMatriz_Cofactor(double a[][], double d[][], double n, double dete
   tadMatriz_Transpose(c, d, n, determinte);
 }
 
-void tadMatriz_ImprimeMatriz(int numLinhas, int numColunas, double matriz[][]){
+public void tadMatriz_ImprimeMatriz(int numLinhas, int numColunas, double matriz[][]){
   for (int i=0; i<numLinhas; i++) {
     for (int j=0; j<numColunas; j++) {
       System.out.print(matriz[i][j]);
@@ -334,6 +385,19 @@ public void tadMatriz_Transpose(double c[][], double d[][], double n, double det
 
 public boolean tadMatriz_Singular(double a[][], int n) {
   return true;
+}
+
+public void criaIdentidade(){
+    int n = this.getC();
+    int i, j;
+    for(i=0;i<n;i++){
+      for(j=0;j<n;j++){
+          if(i==j)this.matriz[i][j] = 1;
+          else this.matriz[i][j] = 0;
+      }  
+    }
+    
+    
 }
 
 
