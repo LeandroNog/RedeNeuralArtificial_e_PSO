@@ -225,6 +225,12 @@ public class Rede {
                                           for (l=0; l<this.getNumEntradas(); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
 						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
+                                                /*Jacobiana.getMatriz()[i][count_Peso] = dados.getListInstancias().get(i).getListAtributos().get(l).getValor()*
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getPesos().get(l)*
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();*/
+                                                        
+                                                        
+                                                        
                                                 //System.out.println(Jacobiana.getMatriz()[i][count_Peso]);
 						count_Peso++;
 					}  
@@ -233,6 +239,9 @@ public class Rede {
                                              for (l=0; l<this.getNumNeuronioCamada().get(j-1); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
 						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
+                                                /*Jacobiana.getMatriz()[i][count_Peso] = this.getCamadas().get(j-1).getListNeuronios().get(l).getSaida()*
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getPesos().get(l)*
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();*/
 						count_Peso++;
 					}  
                                         }
