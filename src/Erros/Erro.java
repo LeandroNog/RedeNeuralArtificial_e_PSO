@@ -22,6 +22,10 @@ public class Erro {
     //Analise de correlação - real x estimado
     private double coeficienteDeDeterminacao;
     
+    public Erro(){
+        
+    }
+    
     public Erro(ArrayList<Double> valorEsperado, ArrayList<Double> respostas){
         double soma = 0.0;
         double media = 0.0;
@@ -32,7 +36,8 @@ public class Erro {
        for(i=0;i<valorEsperado.size();i++){
            soma = soma + abs(valorEsperado.get(i) - respostas.get(i));
        }
-       erroMedio = soma/valorEsperado.size();
+       this.erroMedio = soma/valorEsperado.size();
+       //this.erroMedio = ;
        
        
        
@@ -42,7 +47,7 @@ public class Erro {
            soma = soma + pow(valorEsperado.get(i) - respostas.get(i), 2);
        }
        soma = soma/valorEsperado.size();
-       raizQuadradaErroMedioQuadratico = pow(soma, 0.5);
+        this.raizQuadradaErroMedioQuadratico = pow(soma, 0.5);
        
        
        //Raiz do erro medio quadratico
@@ -57,15 +62,15 @@ public class Erro {
            soma = soma + pow(abs(valorEsperado.get(i) - respostas.get(i)) - erroMedio  , 2);
        }
        soma = soma/valorEsperado.size();
-       variancia = pow(soma, 0.5);
+        this.variancia = pow(soma, 0.5);
        
        
        //Desvio padrao
-       desvioPadrao = pow(variancia, 0.5);
+        this.desvioPadrao = pow(variancia, 0.5);
        
        
        //CoeficienteDeDeterminacao = 1 - raizquadr....sem a raiz e a variancia
-       coeficienteDeDeterminacao = 1.0 - pow(raizQuadradaErroMedioQuadratico, 2)/variancia;
+        this.coeficienteDeDeterminacao = 1.0 - pow(raizQuadradaErroMedioQuadratico, 2)/variancia;
       
         
     }

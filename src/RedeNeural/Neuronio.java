@@ -20,7 +20,8 @@ public class Neuronio {
     private double bias = -1;
     private double saida;
     private double erro;
-    private double derivadaErro;
+    private double delta;
+    private double derivadaSaida;
 
     public Neuronio() {
         pesos = new ArrayList<Double>();
@@ -76,11 +77,11 @@ public class Neuronio {
     }
 
     public double getDerivadaErro() {
-        return derivadaErro;
+        return derivadaSaida;
     }
 
-    public void setDerivadaErro(double derivadaErro) {
-        this.derivadaErro = derivadaErro;
+    public void setDerivadaErro(double derivadaSaida) {
+        this.derivadaSaida = derivadaSaida;
     }
     
     

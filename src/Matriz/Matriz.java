@@ -101,7 +101,7 @@ public class Matriz {
                 num = a[i][j];
             }
             lCop[i][j] = num;
-            System.out.println(l.getMatriz()[i][j]);
+            //System.out.println(l.getMatriz()[i][j]);
           }
         }
         
@@ -125,18 +125,19 @@ public double tadMatriz_Det_U(int n, double U[][]) {
 
 
 // ??? Pra que serve ???
-public double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], double U[][], double B[]){
+public double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], double U[][], double B[][]){
   int i, j, k;
   
-  double []X = new double[n];
-  double []Y = new double[n];
+  double X[] = new double[n];
+  double Y[] = new double[n];
+  
   /*for (i=0; i<n; i++) {
     X[i] = (double*)calloc(m, sizeof(double));  
     Y[i] = (double*)calloc(m, sizeof(double));  
   }*/
-  
+
   for (i=0; i<n; i++) {
-      Y[i]= B[i];
+      Y[i]= B[i][0];
       for (k=0; k<i; k++) {
         Y[i] -= L[i][k]*Y[k];
       }
@@ -158,7 +159,7 @@ public double[] tadMatriz_ResolveDecomposicaoLU(int n, int m, double L[][], doub
 
 public double[][] tadMatriz_Transposta() {
   int i, j, aux;
-  double[][] matriz2 = new double[this.getL()][this.getC()];
+  double[][] matriz2 = new double[this.getC()][this.getL()];
   
   for (i=0; i<l; i++) {
     for (j=0; j<c; j++) {

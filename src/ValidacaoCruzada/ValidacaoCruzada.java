@@ -9,6 +9,7 @@ import Dados.Dados;
 import DadosNormalizados.AtributoNormalizado;
 import DadosNormalizados.DadosNormalizados;
 import DadosNormalizados.InstanciaNormalizada;
+import Erros.Erro;
 import RedeNeural.Rede;
 import file.GravaArquivo;
 import java.util.Collections;
@@ -65,20 +66,28 @@ public class ValidacaoCruzada {
         // gruposValidacaoCruzada.get(9).imprimeDataConsole();
         
         
+        
+        ArrayList<Integer> numNeuronioCamada=new ArrayList<>();
+        numNeuronioCamada.add(2);
+        numNeuronioCamada.add(1);
+        Rede rede = new Rede(2,numNeuronioCamada,4, 100);
+        rede.inicializaRede();
         //Realiza Validação cruzada
+        Erro er = rede.executaAlgoritmodeAprendizado(gruposValidacaoCruzada.get(0));
+        
+        System.out.println("Erro médio: " + er.getErroMedio());
         
         for (i = 0; i<k;i++){ 
+            //System.out.println(i);
+           // rede.executaAlgoritmodeAprendizado(gruposValidacaoCruzada.get(0));
             //Executa aprendizado com grupos exceto grupo i (grupo de validação)
+            
             //Testa com grupo i (grupo de validação)
             
         }
             
-        ArrayList<Integer> numNeuronioCamada=new ArrayList<>();
-        numNeuronioCamada.add(2);
-        numNeuronioCamada.add(1);
         
-        Rede rede = new Rede(2,numNeuronioCamada,4, 10000);
-        rede.inicializaRede();
+        
        
               
         

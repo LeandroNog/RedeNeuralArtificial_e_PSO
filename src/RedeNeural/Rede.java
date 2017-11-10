@@ -14,7 +14,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.exp;
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
  *
  * @author leandro
@@ -108,9 +107,6 @@ public class Rede {
         }
         
         
-        
-        
-        
         return saida;
     }
     
@@ -125,7 +121,7 @@ public class Rede {
         for(i=0;i<dados.getNumInstancias();i++){
             //Propaga instancia
             this.propagaSinal(dados.getListInstancias().get(i));
-            respostaRede = this.getCamadas().get(this.getNumCamadas()-1).getListNeuronios().get(this.getNumNeuronioCamada().get(this.getNumCamadas())).getSaida();
+            respostaRede = this.getCamadas().get(this.getNumCamadas()-1).getListNeuronios().get(this.getNumNeuronioCamada().get(this.getNumCamadas()-1)-1).getSaida();
             saida.add(respostaRede);
             esperado.add(dados.getListInstancias().get(i).getEsperado());
         }
@@ -181,9 +177,14 @@ public class Rede {
         double detHessiana=0.0;
         
         
+        Random r = new Random();
+        double randomValue;
+        
+        Erro bestErro = new Erro();
+        
         double lambda = 1.0;
         double maxLambda = 10;
-        double v = 1.0;
+        double v = 2.0;
         double identidadexLambda[][];
         double ajusteHessiana[][];
         double solucao[];
@@ -208,6 +209,7 @@ public class Rede {
                                 erros1[i][j] = diferenca;
                                 
                                 
+
 			}
                         erros.setMatriz(erros1);
 			
@@ -222,21 +224,27 @@ public class Rede {
 					if (j ==0){
                                           for (l=0; l<this.getNumEntradas(); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
-						//Jacobiana[instancia][count_Peso] = ???
+						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
+                                                //System.out.println(Jacobiana.getMatriz()[i][count_Peso]);
 						count_Peso++;
 					}  
                                         }
-                                       for (l=0; l<this.getNumNeuronioCamada().get(j-1); l++){
+                                        else{
+                                             for (l=0; l<this.getNumNeuronioCamada().get(j-1); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
-						//Jacobiana[instancia][count_Peso] = ???
+						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
 						count_Peso++;
 					}  
+                                        }
+                                      
 				}
 			}
+                        //Capturo os valores esperados
+                        esperado.add(dados.getListInstancias().get(i).getEsperado());
 		}//Fim da criacao da matriz Jacobiana.
 
 		//Calcula erro da tecnica ate o momento.
-		 taxa_ErroAntes = this.executaTeste(dados);
+		taxa_ErroAntes = this.executaTeste(dados);
 		
 		//Calcula matriz transposta da Jacobiana
 		JacobianaTransposta = Jacobiana.tadMatriz_Transposta();
@@ -262,6 +270,7 @@ public class Rede {
    		fimCiclo = false;
    		// Executa aproximacao ate que seja encontrado um erro menor que o obtido no ciclo anterior
    		while ((!fimCiclo) && (lambda < maxLambda)) {
+                    //System.out.println(fimCiclo);
 			//Calcula matriz Identidade x Lambda
 			identidadexLambda = matriz.tadMatriz_MultiplicaConstante(num_Pesos, num_Pesos,identidade.getMatriz(), lambda);
 			//Calcula matriz Hessiana, ja acrescentando o Lambda na diagonal da matriz.
@@ -269,16 +278,18 @@ public class Rede {
 			
 			//Faz a decomposicao LU da matriz Hessiana.
 			matriz.tadMatriz_DecomposicaoLU(num_Pesos, ajusteHessiana, L, U);
+                        //System.out.println("AQUI - " + num_Pesos);
 			
 			//Calcula o determinante da matriz U.
    			detHessiana = matriz.tadMatriz_Det_U(num_Pesos, U.getMatriz());
  			
    			//Verifica se matriz Hessiana eh singular
+                        detHessiana = 2;
    			if (detHessiana > 0.0) {
 				//Resolve o sistema (Hessiana + Lambda x Identidade) * Solucao = B
 				//A matriz solucao eh composta pelos novos pesos.
                                 //B.getMatriz()[0] POIS HA SOMENTE UM NEURONIO, NAO SEI COMO SERIA EM OUTROS CASOS
-				solucao = matriz.tadMatriz_ResolveDecomposicaoLU(num_Pesos,num_Pesos, L.getMatriz(), U.getMatriz(), B.getMatriz()[0]);
+				solucao = matriz.tadMatriz_ResolveDecomposicaoLU(num_Pesos,num_Pesos, L.getMatriz(), U.getMatriz(), B.getMatriz());
 				
 				
                                 //Faz backup dos pesos pois, caso o resultado seja pior que o anterior
@@ -294,12 +305,13 @@ public class Rede {
 				//Verifica se pesos encontrados sao melhores que anteriores
 				if (taxa_ErroAntes.getErroMedio() < taxa_ErroPosAjuste.getErroMedio()) {
 					//Desfaz atualizacao dos pesos.
-					
+					bestErro = taxa_ErroAntes;
 					//Incrementa Lambda e refaz calculo de pesos
 					lambda = lambda * v;
 					fimCiclo = false;
 				}
 				else {
+                                        bestErro = taxa_ErroPosAjuste;
 					//Caso os pesos sao melhores, decrementa lambda (amortece o aprendizado) e inicia proximo ciclo.
 					lambda = lambda / v;
 					fimCiclo = true;
@@ -314,12 +326,14 @@ public class Rede {
 
 	   	
 		}
+                
+        System.out.println("Ciclo:" + ciclos);
 
-	
+	ciclos++;
 	}
         
-        Erro erroTreinamento = new Erro(esperado, saida);
-        return erroTreinamento;
+       
+        return bestErro;
     }
     
     public Rede copiaRede(){
