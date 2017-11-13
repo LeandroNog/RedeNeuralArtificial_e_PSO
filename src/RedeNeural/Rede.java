@@ -12,6 +12,7 @@ import Matriz.Matriz;
 import Matriz.MatrizDouble;
 import static java.lang.Math.abs;
 import static java.lang.Math.exp;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.Random;
 /**
@@ -32,10 +33,9 @@ public class Rede {
         this.camadas = new ArrayList<Camada>();
         this.numNeuronioCamada = numNeuronioCamada; 
         this.numEntradas = numEntradas;
+
     }
-    
-    
-    
+    //verificar se tá correto
     public void inicializaRede(){
         //Inicia rede com pesos aleatórios
         Random random = new Random();
@@ -51,20 +51,23 @@ public class Rede {
         for(i=0;i<this.numCamadas;i++){
             camada = new Camada();
             camada.setNumNeuronios(this.numNeuronioCamada.get(i));
+            //System.out.println("aqui" + camada.getNumNeuronios());
             listNeuronio = new ArrayList<>();
             for(j=0;j<camada.getNumNeuronios();j++){
                 neuronio = new Neuronio();
                 pesos = new ArrayList<>();
                   if(i==0){
                      numeroPesos = this.getNumEntradas();
+                     //System.out.println("camada1" + this.getCamadas().get(0).getNumNeuronios());
                   }
                   else{
                      numeroPesos = this.getCamadas().get(i-1).getNumNeuronios();
+                     //System.out.println(this.getCamadas().get(i-1).getNumNeuronios());
                   }
                   for(l=0;l<numeroPesos;l++){
                        x = random.nextDouble();
                        pesos.add(x);
-                      // System.out.println(x);
+                       
                   }
                 neuronio.setPesos(pesos);
                 neuronio.setBias(random.nextDouble());
@@ -98,10 +101,13 @@ public class Rede {
         for(c = 1; c<this.getNumCamadas();c++){
             for(i = 0 ; i<this.getNumNeuronioCamada().get(c) ; i++){
                 for(j = 0; j < this.getNumNeuronioCamada().get(c-1); j++){
-                    saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)*this.getCamadas().get(c-1).getListNeuronios().get(j).getSaida();
+                    //System.out.println(this.getNumNeuronioCamada().get(c-1));
+                    //System.out.println(this.getCamadas().get(c).getListNeuronios().get(i).getPesos().size());
+                    this.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j);
+                    saida = saida + this.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)*this.getCamadas().get(c-1).getListNeuronios().get(j).getSaida();
                     saida = fncIA_MLP_sigmoide(saida);
                 }
-            this.getCamadas().get(i).getListNeuronios().get(i).setSaida(saida);
+            this.getCamadas().get(c).getListNeuronios().get(i).setSaida(saida);
             }
         
         }
@@ -125,7 +131,8 @@ public class Rede {
             saida.add(respostaRede);
             esperado.add(dados.getListInstancias().get(i).getEsperado());
         }
-
+       
+        
         Erro erroTeste = new Erro(esperado, saida);
 
         return erroTeste;
@@ -134,6 +141,11 @@ public class Rede {
     
     
     public Erro executaAlgoritmodeAprendizado(DadosNormalizados dados){
+        
+        
+        //dados.imprimeDataConsole();
+        
+        
         ArrayList<Double> saida = new ArrayList<>();
         ArrayList<Double> esperado = new ArrayList<>();
        
@@ -182,21 +194,24 @@ public class Rede {
         
         Erro bestErro = new Erro();
         
-        double lambda = 1.0;
+        double lambda = 0.000001;
         double maxLambda = 10;
-        double v = 2.0;
+        double v = 1.2;
         double identidadexLambda[][];
         double ajusteHessiana[][];
         double solucao[];
         Rede redeBackup;
         Erro taxa_ErroPosAjuste;
+        int c;
 	// Ateh o criterio de parada ser satisfeito [numero de ciclos]
 	while(ciclos<this.getNumCiclos()) {
-		
+		lambda = 0.000001;
 	    	// Calculo da matriz Jacobiana.
     		for (i=0;i<dados.getNumInstancias();i++) {
 			// Propaga o sinal pela rede ateh a camada de saida.
                         this.propagaSinal(dados.getListInstancias().get(i));
+                        
+                        
 			
 			// Calcula o erro para cada neuronio de saida.
 			for (j=0;j<this.getCamadas().get(this.getNumCamadas()-1).getNumNeuronios();j++) {
@@ -207,10 +222,15 @@ public class Rede {
 				
                                 // Adiciona o erro do neuronio na matriz de erros.
                                 erros1[i][j] = diferenca;
+                                this.getCamadas().get(this.getNumCamadas()-1).getListNeuronios().get(j).setErro(diferenca);
                                 
                                 
 
 			}
+                        
+                        this.fncIA_MLP_RetropropagaErro();
+                        
+                        
                         erros.setMatriz(erros1);
 			
 			// Retropropaga o erro
@@ -225,9 +245,9 @@ public class Rede {
                                           for (l=0; l<this.getNumEntradas(); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
 						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
-                                                /*Jacobiana.getMatriz()[i][count_Peso] = dados.getListInstancias().get(i).getListAtributos().get(l).getValor()*
+                                                Jacobiana.getMatriz()[i][count_Peso] = dados.getListInstancias().get(i).getListAtributos().get(l).getValor()*
                                                         this.getCamadas().get(j).getListNeuronios().get(k).getPesos().get(l)*
-                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();*/
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();
                                                         
                                                         
                                                         
@@ -239,9 +259,9 @@ public class Rede {
                                              for (l=0; l<this.getNumNeuronioCamada().get(j-1); l++){
 						// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
 						Jacobiana.getMatriz()[i][count_Peso] = r.nextDouble();
-                                                /*Jacobiana.getMatriz()[i][count_Peso] = this.getCamadas().get(j-1).getListNeuronios().get(l).getSaida()*
+                                                Jacobiana.getMatriz()[i][count_Peso] = this.getCamadas().get(j-1).getListNeuronios().get(l).getSaida()*
                                                         this.getCamadas().get(j).getListNeuronios().get(k).getPesos().get(l)*
-                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();*/
+                                                        this.getCamadas().get(j).getListNeuronios().get(k).getDelta();
 						count_Peso++;
 					}  
                                         }
@@ -278,8 +298,9 @@ public class Rede {
 
    		fimCiclo = false;
    		// Executa aproximacao ate que seja encontrado um erro menor que o obtido no ciclo anterior
-   		while ((!fimCiclo) && (lambda < maxLambda)) {
-                    //System.out.println(fimCiclo);
+   		lambda = 0.000001;
+                while ((!fimCiclo) && (lambda < maxLambda)) {
+                    
 			//Calcula matriz Identidade x Lambda
 			identidadexLambda = matriz.tadMatriz_MultiplicaConstante(num_Pesos, num_Pesos,identidade.getMatriz(), lambda);
 			//Calcula matriz Hessiana, ja acrescentando o Lambda na diagonal da matriz.
@@ -295,6 +316,7 @@ public class Rede {
    			//Verifica se matriz Hessiana eh singular
                         detHessiana = 2;
    			if (detHessiana > 0.0) {
+                             //System.out.println("Err" );
 				//Resolve o sistema (Hessiana + Lambda x Identidade) * Solucao = B
 				//A matriz solucao eh composta pelos novos pesos.
                                 //B.getMatriz()[0] POIS HA SOMENTE UM NEURONIO, NAO SEI COMO SERIA EM OUTROS CASOS
@@ -307,24 +329,57 @@ public class Rede {
 				
 				//Atualiza pesos com a solucao gerada.
 				// IMPORTANTE: Este calculo nao deve ser implementado agora !!!
-				
+                                
+                                
+                                
+                                //Atualiza pesos com a solucao gerada.
+				//Primeira camada
+                                for(i = 0 ; i<this.getNumNeuronioCamada().get(0) ; i++){
+                                    for(j = 0; j < this.getNumEntradas(); j++){
+                                        this.getCamadas().get(0).getListNeuronios().get(i).getPesos().set(j, this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j) - solucao[j]);
+                                    }
+                                    
+                                }
+                                //Outras camadas
+                                for(c = 1; c<this.getNumCamadas();c++){
+                                    for(i = 0 ; i<this.getNumNeuronioCamada().get(c) ; i++){
+                                        for(j = 0; j < this.getNumNeuronioCamada().get(c-1); j++){
+                                            this.getCamadas().get(c).getListNeuronios().get(i).getPesos().set(j, this.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j) - solucao[j]);
+                                    
+                                        }
+                                   
+                                    }
+
+                                }
+
 				//Refaz teste sobre o conjunto
 				 taxa_ErroPosAjuste = this.executaTeste(dados);
+                                 //System.out.println("Erro Apos: " + taxa_ErroPosAjuste.getErroMedio() );
+					
 				
 				//Verifica se pesos encontrados sao melhores que anteriores
-				if (taxa_ErroAntes.getErroMedio() < taxa_ErroPosAjuste.getErroMedio()) {
+				if (taxa_ErroAntes.getErroMedio() <= taxa_ErroPosAjuste.getErroMedio()) {
 					//Desfaz atualizacao dos pesos.
-					bestErro = taxa_ErroAntes;
+                                        this.setCamadas(redeBackup.getCamadas());
+                                        //System.out.println(this.getCamadas().get(0).getListNeuronios().get(0).getPesos().get(0));
+    
+                                        bestErro = taxa_ErroAntes;
 					//Incrementa Lambda e refaz calculo de pesos
 					lambda = lambda * v;
 					fimCiclo = false;
+                                       // System.out.println("Lambda: " + lambda );
+                                        
 				}
 				else {
                                         bestErro = taxa_ErroPosAjuste;
+                                        //System.out.println("Erro Antes: " + taxa_ErroAntes.getErroMedio() );
+					
+                                        //System.out.println("Erro Melhorado: " + bestErro.getErroMedio() );
 					//Caso os pesos sao melhores, decrementa lambda (amortece o aprendizado) e inicia proximo ciclo.
 					lambda = lambda / v;
 					fimCiclo = true;
 				}
+                               
 				
 	
 	   		}
@@ -336,14 +391,39 @@ public class Rede {
 	   	
 		}
                 
-        System.out.println("Ciclo:" + ciclos);
-
+                System.out.println("Erro: " + bestErro.getErroMedio() );
 	ciclos++;
 	}
         
        
         return bestErro;
     }
+    
+    
+   // Retropropaga o erro, ja calculado, pela rede.
+void fncIA_MLP_RetropropagaErro() {
+	int c, n, e;
+	double erro;
+
+	// Calcula o delta da camada de saida.
+	c = this.getNumCamadas()-1;
+	for(n=0; n<this.getNumNeuronioCamada().get(c); n++) {
+		this.getCamadas().get(c).getListNeuronios().get(n).setDelta(this.getCamadas().get(c).getListNeuronios().get(n).getErro() *this.fncIA_MLP_derivadaSigmoide(this.getCamadas().get(c).getListNeuronios().get(n).getSaida()));
+	}
+
+	for (c=(this.getNumCamadas()-2); c>=0; c--) {
+		for (n=0; n<this.getNumNeuronioCamada().get(c); n++) {
+			erro = 0.0;
+			for (e=0; e<this.getNumNeuronioCamada().get(c+1); e++) {
+				erro += this.getCamadas().get(c+1).getListNeuronios().get(e).getPesos().get(n) *  this.getCamadas().get(c+1).getListNeuronios().get(e).getDelta();
+                                
+			}
+                        this.getCamadas().get(c).getListNeuronios().get(n).setErro(erro);
+                        this.getCamadas().get(c).getListNeuronios().get(n).setDelta(erro * this.fncIA_MLP_derivadaSigmoide(this.getCamadas().get(c).getListNeuronios().get(n).getSaida()));
+		}
+	}
+}
+
     
     public Rede copiaRede(){
         // Rede(int numCamadas,ArrayList<Integer> numNeuronioCamada,int numEntradas,  int numCiclos)
@@ -364,6 +444,7 @@ public class Rede {
             camada.setNumNeuronios(this.numNeuronioCamada.get(i));
             listNeuronio = new ArrayList<>();
             for(j=0;j<camada.getNumNeuronios();j++){
+                
                 neuronio = new Neuronio();
                 pesos = new ArrayList<>();
                   if(i==0){
@@ -376,7 +457,7 @@ public class Rede {
                        pesos.add(this.getCamadas().get(i).getListNeuronios().get(j).getPesos().get(l));
                       // System.out.println(x);
                   }
-
+                
                 neuronio.setPesos(pesos);
                 neuronio.setBias(this.getCamadas().get(i).getListNeuronios().get(j).getBias());
                 listNeuronio.add(neuronio);

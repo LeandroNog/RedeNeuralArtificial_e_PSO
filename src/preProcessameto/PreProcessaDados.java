@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.System.exit;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -28,23 +29,112 @@ public class PreProcessaDados {
     
     public DadosNormalizados normalizaDados(Dados dados){
         DadosNormalizados dadosNorm = new DadosNormalizados();
-        InstanciaNormalizada instNorm;
-        AtributoNormalizado atribNorm;
+       
+        Instancia instNew;
+        Atributo atribNew;
         AtributoNormalizado atribDia;
+        ArrayList<Instancia> newListInstancias = new ArrayList();
         int i, j;
         String[] splitValues = {"",""};
         //Copia dados normais para
         
+        int indice = -1;
+        int k=0;
+        int f;
+        double valor=0.0;
+          
+        
+       
+        /*
+        for(i=0;i<dados.getNumInstancias();i++){
+             instNew = new Instancia();
+
+             for(j=0;j<dados.getNumAtributos();j++){
+                 atribNew = new Atributo();
+                 
+                 //SOMA INSTANCIAS COM TIMESTAMP IGUAIS, OU SEJA FAZ O PREVISTO DA CASA TODA descomentar se for o caso
+                 if(j==1){
+                     indice = -1;
+                     for(k = 0; k < newListInstancias.size(); k++){
+                             if(newListInstancias.get(k).getListAtributos().get(j).getValor() == dados.getListInstancias()
+                                 .get(i).getListAtributos().get(j).getValor()){
+                                 //System.out.println("igual");
+                             indice = k;
+                             break;
+                         
+                         
+                         }
+                     }
+                     
+                    if(indice!=-1){
+                        newListInstancias.get(k).setEsperado(newListInstancias.get(k).getEsperado() + dados.getListInstancias().get(i).getEsperado());
+                        
+                        //Copia somando
+                        for(f=0; f < dados.getNumAtributos();f++)
+                            
+                            if((f!=0)&&(f!=1)){
+
+                            newListInstancias.get(k).getListAtributos().get(f).setValor(newListInstancias.get(k).getListAtributos().get(f).getValor()
+                                    + dados.getListInstancias().get(i).getListAtributos().get(j).getValor());
+                            
+                             break;
+                            }
+                        
+
+                        
+                      }
+                      else{
+                                //add instancia
+                                instNew = new Instancia();
+                                atribNew = new Atributo();
+                                atribNew.setValor(0.0);
+                                instNew.getListAtributos().add(atribNew); //atrib 0
+                                atribNew = new Atributo();
+                                atribNew.setValor(dados.getListInstancias().get(i).getListAtributos().get(1).getValor());
+                                instNew.getListAtributos().add(atribNew); //atrib 1
+                                
+                                for(f=2;f<dados.getNumAtributos();f++){
+                                    atribNew = new Atributo();
+                                    atribNew.setValor(dados.getListInstancias().get(i).getListAtributos().get(f).getValor());
+                                    instNew.getListAtributos().add(atribNew);
+                                }
+                                
+                                instNew.setEsperado(dados.getListInstancias().get(i).getEsperado());
+                                instNew.setNome("Casa1");
+                                newListInstancias.add(instNew);
+                            }
+                    
+                    
+                     
+                 }
+                 
+             }
+             //System.out.println("Somando"+ i);
+        }
+        */
+        //exit(1);
+        //atualiza lista de instancia
+        //dados.setListInstancias(newListInstancias);
+        //dados.setNumInstancias(newListInstancias.size());
         dadosNorm.setNumInstancias(dados.getNumInstancias());
         dadosNorm.setNumAtributos(dados.getNumAtributos()+1); //timestamp vira dois atributos
+        //atualiza num instancias
+        //dados.imprimeDataConsole();
+        //dados.imprimeDataArquivo(dados, 25);
+        
+        System.out.println("Dados Normalizados!");
+        
+        InstanciaNormalizada instNorm;
+        AtributoNormalizado atribNorm;
         
         for(i=0;i<dados.getNumInstancias();i++){
+
              instNorm = new InstanciaNormalizada();
              instNorm.setNome(dados.getListInstancias().get(i).getNome());
              instNorm.setEsperado(dados.getListInstancias().get(i).getEsperado());
              for(j=0;j<dados.getNumAtributos();j++){
                  atribNorm = new AtributoNormalizado();
-                 
+
                  if(j==1){ 
                     //Converte timestamp pra hora e dia da semana
                     String dateAsText = new SimpleDateFormat("HH:mm:ss:EEE")
@@ -67,9 +157,7 @@ public class PreProcessaDados {
                     atribNorm.setValor(dados.getListInstancias().get(i).getListAtributos().get(j).getValor());
                     instNorm.getListAtributos().add(atribNorm);
                  }
-                            
   
-                 
                  
              }     
              double valorAtrib = 0.0;
@@ -106,8 +194,7 @@ public class PreProcessaDados {
         }
         
         //dados.imprimeDataConsole();
-        
-        //dadosNorm.imprimeDataConsole();
+       
 
         
          //Consegue maior atributo 2
@@ -155,7 +242,10 @@ public class PreProcessaDados {
                }
               
     
-                //dataNormalizado.imprimeDataConsole();
+        //dataNormalizado.imprimeDataConsole
+     
+        //dadosNorm.imprimeDataConsole();
+        
         return dataNormalizado;
         
         

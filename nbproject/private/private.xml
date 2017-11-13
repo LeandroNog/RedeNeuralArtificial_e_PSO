@@ -5,7 +5,7 @@
             <url>src/RedeNeural/Rede.java</url>
             <bookmark id="1">
                 <name/>
-                <line>243</line>
+                <line>278</line>
                 <key/>
             </bookmark>
         </file>
@@ -20,9 +20,8 @@
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Dados/Instancia.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Erros/Erro.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Matriz/MatrizDouble.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Camada.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/DadosNormalizados/AtributoNormalizado.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/file/GravaArquivo.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Camada.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Neuronio.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcGrafico/preProc.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcessameto/PreProcessaDados.java</file>

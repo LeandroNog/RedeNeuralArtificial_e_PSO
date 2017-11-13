@@ -95,10 +95,10 @@ public class DadosNormalizados {
             
             
             String linha;
-            for(int i = 0; i < this.numInstancias-1; i++){
+            for(int i = 0; i < this.numInstancias; i++){
                 linha = this.getListInstancias().get(i).getNome() + ", ";
              
-                for(int j = 0; j < this.numAtributos - 1; j++){
+                for(int j = 0; j < this.numAtributos; j++){
                     if(j==(this.numAtributos-2)){
                        linha = linha + String.valueOf(this.getListInstancias().get(i).getListAtributos().get(j).getValor()); 
                     }

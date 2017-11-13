@@ -17,6 +17,7 @@ import file.LeituraArquivo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,15 +32,16 @@ public class ValidacaoCruzada {
     public static void main(String[] args){
         
         
-        int i, k=10;
+        int i, k=1;
        
         //Carrego os dados
-        String pathArquivo = "smarthome_2012-May-7.csv";
+        String pathArquivo = "hora100.txt";
         LeituraArquivo leituraArquivo = new LeituraArquivo();
         
         //Carrega dados sem normalizar
         Dados dados = leituraArquivo.carregaDados(pathArquivo);
-//        dados.imprimeDataConsole();
+        //dados.imprimeDataConsole();
+       //exit(1);
         
         PreProcessaDados preProcessaDados = new PreProcessaDados();
         DadosNormalizados dadosNormalizado = preProcessaDados.normalizaDados(dados);
@@ -68,28 +70,46 @@ public class ValidacaoCruzada {
         
         
         ArrayList<Integer> numNeuronioCamada=new ArrayList<>();
-        numNeuronioCamada.add(2);
+        numNeuronioCamada.add(8);
+        numNeuronioCamada.add(4);
         numNeuronioCamada.add(1);
-        Rede rede = new Rede(2,numNeuronioCamada,4, 100);
+        Rede rede = new Rede(3,numNeuronioCamada,4, 1000);
         rede.inicializaRede();
-        //Realiza Validação cruzada
-        Erro er = rede.executaAlgoritmodeAprendizado(gruposValidacaoCruzada.get(0));
+        Erro er;
+        Erro valid;
+        Erro test;
+        Rede bestRede = rede.copiaRede();
+        Erro bestErro;
+        k = 1;
         
-        System.out.println("Erro médio: " + er.getErroMedio());
         
-        for (i = 0; i<k;i++){ 
-            //System.out.println(i);
-           // rede.executaAlgoritmodeAprendizado(gruposValidacaoCruzada.get(0));
-            //Executa aprendizado com grupos exceto grupo i (grupo de validação)
-            
-            //Testa com grupo i (grupo de validação)
+        //rede = new Rede(3,numNeuronioCamada,4, 1000);
+        er = rede.executaAlgoritmodeAprendizado(v.separaTreinamentoGrupo(dadosNormalizado, 0).get(1));
+        valid = rede.executaTeste(v.separaTreinamentoGrupo(dadosNormalizado, 0).get(0));
+        test = rede.executaTeste(testeTreinamento.get(0));
+        bestErro = test;
+        System.out.println("Erro médio: " + test.getErroMedio());
+        if(bestErro.getErroMedio()> test.getErroMedio()){
+               bestErro = test;
+               bestRede = rede;
+        }
+                
+ 
+        for (i = 1; i<k;i++){ 
+            rede = new Rede(3,numNeuronioCamada,4, 100);
+            er = rede.executaAlgoritmodeAprendizado(v.separaTreinamentoGrupo(dadosNormalizado, 0).get(1));
+            valid = rede.executaTeste(v.separaTreinamentoGrupo(dadosNormalizado, 0).get(0));
+            test = rede.executaTeste(testeTreinamento.get(0));
+            bestErro = test;
+            System.out.println("Erro médio teste: " + test.getErroMedio());
+            if(bestErro.getErroMedio()> test.getErroMedio()){
+                   bestErro = test;
+                   bestRede = rede;
+            }
+
             
         }
-            
-        
-        
-       
-              
+     
         
         
     }
@@ -197,7 +217,55 @@ public class ValidacaoCruzada {
         return listDados;
 
         
+        
     }
+    
+    //Separa grupo k
+    public ArrayList<DadosNormalizados> separaTreinamentoGrupo(DadosNormalizados dados, int k){
+       ArrayList<DadosNormalizados> listDados = new ArrayList<DadosNormalizados>();
+        
+   
+       int i, j, g;
+       
+       int numInstancias = dados.getNumInstancias()/10;
+       
+       DadosNormalizados dadosNorm;
+       InstanciaNormalizada instNorm;
+       AtributoNormalizado atribNorm;
+       
+       for (g = 0; g<2;g++){
+
+        //Separa conjunto de teste
+        dadosNorm = new DadosNormalizados();
+        dadosNorm.setNumInstancias(numInstancias);
+        dadosNorm.setNumAtributos(dados.getNumAtributos());
+        if(g==1) numInstancias = (dados.getNumInstancias()/10)*9;
+        for (i= (dados.getNumInstancias()/10)*g; i < numInstancias; i++) {
+           instNorm = new InstanciaNormalizada();
+           instNorm.setNome(dados.getListInstancias().get(i).getNome());
+           instNorm.setEsperado(dados.getListInstancias().get(i).getEsperado());
+                  for( j = 0; j < dados.getNumAtributos(); j++){
+                        atribNorm = new AtributoNormalizado();
+                        atribNorm.setValor(dados.getListInstancias().get(i).getListAtributos().get(j).getValor());
+                        instNorm.getListAtributos().add(atribNorm);
+                  }
+              dadosNorm.getListInstancias().add(instNorm);
+            }
+        
+        listDados.add(dadosNorm);
+        
+       }
+       
+
+        return listDados;
+
+        
+    }
+    
+    
+    
+    
+    
     
    
  
