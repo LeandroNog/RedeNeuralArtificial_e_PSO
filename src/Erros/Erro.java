@@ -30,18 +30,25 @@ public class Erro {
         double soma = 0.0;
         double media = 0.0;
         int i, j;
-        double MARGEM = 0.1;
+        double MARGEM =0.2;
        //Calcula todos erros
        
        //ErroMedio
        for(i=0;i<valorEsperado.size();i++){
 
           soma = soma + abs(valorEsperado.get(i) - respostas.get(i));
+         
+         /* if((respostas.get(i) >=valorEsperado.get(i) - MARGEM)&&(respostas.get(i)<=valorEsperado.get(i) + MARGEM )){
+              //soma++;
+          }else{
+              soma++;
+          }
+      */
        }
        this.erroMedio = soma/valorEsperado.size();
-       
-      // System.out.println("init" +respostas.get(0)+ "\n");
-       
+     /*  for(int f = 0;f<10;f++){
+           
+       */
        
        //Raiz do erro medio quadratico
        soma = 0.0;

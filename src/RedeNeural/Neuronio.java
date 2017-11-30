@@ -14,7 +14,8 @@ import java.util.ArrayList;
 public class Neuronio {
    
     private ArrayList<Double> pesos;
-    
+    private ArrayList<Double> dw;
+    private double dBias;
     private double pesoBias;
     private double bias = -1;
     private double saida;
@@ -24,6 +25,8 @@ public class Neuronio {
 
     public Neuronio() {
         pesos = new ArrayList<Double>();
+        dw = new ArrayList<Double>();
+        
     }
 
     public ArrayList<Double> getPesos() {
@@ -74,8 +77,6 @@ public class Neuronio {
         this.delta = delta;
     }
     
-    
-
     public double getDerivadaErro() {
         return derivadaSaida;
     }
@@ -83,7 +84,31 @@ public class Neuronio {
     public void setDerivadaErro(double derivadaSaida) {
         this.derivadaSaida = derivadaSaida;
     }
-    
-    
-    
+
+    public ArrayList<Double> getDw() {
+        return dw;
+    }
+
+    public void setDw(ArrayList<Double> dw) {
+        this.dw = dw;
+    }
+
+    public double getDerivadaSaida() {
+        return derivadaSaida;
+    }
+
+    public void setDerivadaSaida(double derivadaSaida) {
+        this.derivadaSaida = derivadaSaida;
+    }
+
+    public double getdBias() {
+        return dBias;
+    }
+
+    public void setdBias(double dBias) {
+        this.dBias = dBias;
+    }
+
+   
+
 }

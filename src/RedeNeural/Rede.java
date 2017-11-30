@@ -26,6 +26,7 @@ public class Rede {
     private ArrayList<Integer> numNeuronioCamada;
     private int numCiclos;
     private int numEntradas;
+    private double taxaDeAprendizado = 0.1;
 
     public Rede(int numCamadas,ArrayList<Integer> numNeuronioCamada,int numEntradas,  int numCiclos) {
         this.numCamadas = numCamadas;
@@ -33,6 +34,7 @@ public class Rede {
         this.camadas = new ArrayList<Camada>();
         this.numNeuronioCamada = numNeuronioCamada; 
         this.numEntradas = numEntradas;
+        this.taxaDeAprendizado = 0.5;
 
     }
     //verificar se tá correto
@@ -43,6 +45,7 @@ public class Rede {
         int i, j, l;
         int numeroPesos;
         ArrayList<Double> pesos = new ArrayList<>();
+        ArrayList<Double> dw = new ArrayList<>();
         ArrayList<Neuronio> listNeuronio = new ArrayList<>();
          
         Camada camada;
@@ -50,6 +53,8 @@ public class Rede {
         ArrayList<Camada> camadas = new ArrayList<>();
         for(i=0;i<this.numCamadas;i++){
             camada = new Camada();
+            
+            
             camada.setNumNeuronios(this.numNeuronioCamada.get(i));
             //System.out.println("aqui" + camada.getNumNeuronios());
             listNeuronio = new ArrayList<>();
@@ -65,11 +70,13 @@ public class Rede {
                      //System.out.println(this.getCamadas().get(i-1).getNumNeuronios());
                   }
                   for(l=0;l<numeroPesos;l++){
-                       x = random.nextDouble();
+                       x = 0.5;
                        pesos.add(x);
+                       dw.add(0.0);
                        
                   }
                 neuronio.setPesos(pesos);
+                neuronio.setDw(dw);
                 neuronio.setBias(random.nextDouble());
                 listNeuronio.add(neuronio);
  
@@ -89,30 +96,32 @@ public class Rede {
         
         //Primeira camada
         for(i = 0 ; i<this.getNumNeuronioCamada().get(0) ; i++){
+            saida=0.0;
             for(j = 0; j < this.getNumEntradas(); j++){
-                
                 saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)*instancia.getListAtributos().get(j).getValor();
-                saida = fncIA_MLP_sigmoide(saida);
                 
             }
-            this.getCamadas().get(0).getListNeuronios().get(i).setSaida(saida);
+            saida = saida + this.getCamadas().get(0).getListNeuronios().get(i).getBias();
+            this.getCamadas().get(0).getListNeuronios().get(i).setSaida(this.fncIA_MLP_sigmoide(saida));
         }
         //Outras camadas
         for(c = 1; c<this.getNumCamadas();c++){
             for(i = 0 ; i<this.getNumNeuronioCamada().get(c) ; i++){
+                saida=0.0;
                 for(j = 0; j < this.getNumNeuronioCamada().get(c-1); j++){
-                    //System.out.println(this.getNumNeuronioCamada().get(c-1));
-                    //System.out.println(this.getCamadas().get(c).getListNeuronios().get(i).getPesos().size());
-                    this.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j);
+
                     saida = saida + this.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)*this.getCamadas().get(c-1).getListNeuronios().get(j).getSaida();
-                    saida = fncIA_MLP_sigmoide(saida);
+                   
                 }
-            this.getCamadas().get(c).getListNeuronios().get(i).setSaida(saida);
+                
+                saida = saida + this.getCamadas().get(c).getListNeuronios().get(i).getBias();
+                this.getCamadas().get(c).getListNeuronios().get(i).setSaida(this.fncIA_MLP_sigmoide(saida));
+        
+           
             }
         
         }
-        
-        
+
         return saida;
     }
     
@@ -399,6 +408,72 @@ public class Rede {
         return bestErro;
     }
     
+            
+        
+// Executa o algoritmo de treinamento Backpropagation.
+    public Erro executaAprendizadoBackPropagation(DadosNormalizados dados){
+        Erro erro=null;
+
+	int c, n, i, j;
+	int count = 0;
+	double erro_Medio = 0.0;
+	boolean bit;
+        double erroSaida=0.0;
+	int pos=0;
+        double entradas[] = new double[dados.getNumAtributos()];
+	double varianciaErro = -1.0;
+	do {
+            c = this.getNumCamadas()-1;
+		
+		// Submete a rede ao aprendizado.
+		erro_Medio = 0.0;
+		for (i=0; i<dados.getNumInstancias(); i++) {
+			// Pondera entradas pelo peso de cada atributo.
+				for (j = 0; j <dados.getNumAtributos(); j++) {
+					entradas[j] = dados.getListInstancias().get(i).getListAtributos().get(j).getValor();
+				}
+			
+
+			// Propaga o sinal pela rede ateh a camada de saida.
+			propagaSinal( dados.getListInstancias().get(i));
+			
+                        ///CALCULA ERROS
+                        for(j = 0; j<this.getNumNeuronioCamada().get(c) ; j++){
+                            erroSaida = ( dados.getListInstancias().get(i).getEsperado() - this.getCamadas().get(c).getListNeuronios().get(j).getSaida());
+                           this.getCamadas().get(c).getListNeuronios().get(j).setErro(erroSaida);
+                          //if (i==0)System.out.println("erro:" + erroSaida);
+                        }
+                        
+			// Retropropaga (backpropagation) o erro calculado.
+			fncIA_MLP_RetropropagaErro();
+			
+			// Ajusta os pesos dos neuronios.
+			ajustaPesos(entradas);
+		}
+		
+		// Atualiza condicoes de parada.
+		erro_Medio = (float) erro_Medio / (this.getNumNeuronioCamada().get(c) * dados.getNumInstancias());
+		
+		
+		count++;
+                
+                 erro = this.executaTeste(dados);
+                 
+                // System.out.println("Erro back" + erro.getRaizQuadradaErroMedioQuadratico());
+		
+		// Verifica condicoes de parada.
+                 //System.out.println(this.getCamadas().get(1).getListNeuronios().get(0).getPesos().get(0));
+                
+                
+	} while (count < this.getNumCiclos());
+	
+ 
+        
+
+       
+        return erro;
+}
+    
     
    // Retropropaga o erro, ja calculado, pela rede.
 void fncIA_MLP_RetropropagaErro() {
@@ -409,20 +484,74 @@ void fncIA_MLP_RetropropagaErro() {
 	c = this.getNumCamadas()-1;
 	for(n=0; n<this.getNumNeuronioCamada().get(c); n++) {
 		this.getCamadas().get(c).getListNeuronios().get(n).setDelta(this.getCamadas().get(c).getListNeuronios().get(n).getErro() *this.fncIA_MLP_derivadaSigmoide(this.getCamadas().get(c).getListNeuronios().get(n).getSaida()));
-	}
-
+                
+        }
+        		
 	for (c=(this.getNumCamadas()-2); c>=0; c--) {
+            
 		for (n=0; n<this.getNumNeuronioCamada().get(c); n++) {
 			erro = 0.0;
 			for (e=0; e<this.getNumNeuronioCamada().get(c+1); e++) {
+                            
 				erro += this.getCamadas().get(c+1).getListNeuronios().get(e).getPesos().get(n) *  this.getCamadas().get(c+1).getListNeuronios().get(e).getDelta();
-                                
-			}
+                        //System.out.println(erro);      
+                        }
                         this.getCamadas().get(c).getListNeuronios().get(n).setErro(erro);
+                        
                         this.getCamadas().get(c).getListNeuronios().get(n).setDelta(erro * this.fncIA_MLP_derivadaSigmoide(this.getCamadas().get(c).getListNeuronios().get(n).getSaida()));
-		}
+		
+                }
+                
 	}
 }
+
+
+// Ajusta os pesos dos neuronios.
+public void ajustaPesos(double entradas[]) {
+	int c, n, e;
+	double ajuste;
+
+	// Ajusta os pesos dos neuronios da camada de entrada.
+	for (n=0; n<this.getNumNeuronioCamada().get(0); n++) {
+		for (e=0; e<this.getNumEntradas(); e++) {
+                    
+			ajuste = (this.taxaDeAprendizado * this.getCamadas().get(0).getListNeuronios().get(n).getDelta() * entradas[e]);
+                        this.getCamadas().get(0).getListNeuronios().get(n).getPesos().set(e, 
+                               this.getCamadas().get(0).getListNeuronios().get(n).getPesos().get(e) + ajuste + this.getCamadas().get(0).getListNeuronios().get(n).getDw().get(e) );
+			//System.out.println("p"+ajuste);
+                        this.getCamadas().get(0).getListNeuronios().get(n).getDw().set(e, ajuste);
+                        
+                        //System.out.println("t"+this.getCamadas().get(0).getListNeuronios().get(n).getDelta());
+		}
+		ajuste = (this.getTaxaDeAprendizado() * this.getCamadas().get(0).getListNeuronios().get(n).getDelta());
+		//System.out.println("aj"+this.getCamadas().get(0).getListNeuronios().get(n).getDelta());
+                this.getCamadas().get(0).getListNeuronios().get(n).setBias(this.getCamadas().get(0).getListNeuronios().get(n).getBias() + ajuste + this.getCamadas().get(0).getListNeuronios().get(n).getdBias() );
+                this.getCamadas().get(0).getListNeuronios().get(n).setdBias(ajuste);
+	}
+
+	// Ajusta os pesos dos neuronios das demais camadas.
+	for (c=1; c<this.getNumCamadas(); c++) {
+		// Ajusta os pesos dos neuronios da camada de entrada.
+            for (n=0; n<this.getNumNeuronioCamada().get(c); n++) {
+                //System.out.println(this.getNumNeuronioCamada().get(c));
+                //System.out.println(this.getCamadas().get(c).getListNeuronios().get(n).getPesos().get(2));
+              //  exit(1);
+                    for (e=0; e<this.getNumNeuronioCamada().get(c-1); e++) {
+                            ajuste = (this.taxaDeAprendizado * this.getCamadas().get(c).getListNeuronios().get(n).getDelta() * this.getCamadas().get(c-1).getListNeuronios().get(e).getSaida());
+                            this.getCamadas().get(c).getListNeuronios().get(n).getPesos().set(e, 
+                                   this.getCamadas().get(c).getListNeuronios().get(n).getPesos().get(e) + ajuste + this.getCamadas().get(c).getListNeuronios().get(n).getDw().get(e) );
+                            this.getCamadas().get(c).getListNeuronios().get(n).getDw().set(e, ajuste);
+                            //System.out.println("ajuste"+ajuste);
+                    }
+                    ajuste = (this.getTaxaDeAprendizado() * this.getCamadas().get(c).getListNeuronios().get(n).getDelta());
+                    //System.out.println("Ajuste = " +this.getCamadas().get(c).getListNeuronios().get(n).getDelta());
+                    this.getCamadas().get(c).getListNeuronios().get(n).setBias(this.getCamadas().get(c).getListNeuronios().get(n).getBias() + ajuste + this.getCamadas().get(c).getListNeuronios().get(n).getdBias() );
+                    this.getCamadas().get(c).getListNeuronios().get(n).setdBias(ajuste);
+            }
+    }
+}
+
+
 
     
     public Rede copiaRede(){
@@ -522,14 +651,14 @@ double fncIA_MLP_derivadaSigmoide(double valor) {
 	return (valor * (1 - valor));
 }
 
-    
-    
-    
-    
-    
-    
-    
-    
+public double getTaxaDeAprendizado() {
+        return taxaDeAprendizado;
+    }
+
+public void setTaxaDeAprendizado(double taxaDeAprendizado) {
+        this.taxaDeAprendizado = taxaDeAprendizado;
+    }
+
     
 }
 
