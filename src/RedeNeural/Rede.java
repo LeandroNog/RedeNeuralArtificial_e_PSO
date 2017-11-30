@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package RedeNeural;
-
 import DadosNormalizados.DadosNormalizados;
 import DadosNormalizados.InstanciaNormalizada;
 import Erros.Erro;
@@ -26,7 +25,7 @@ public class Rede {
     private ArrayList<Integer> numNeuronioCamada;
     private int numCiclos;
     private int numEntradas;
-    private double taxaDeAprendizado = 0.1;
+    private double taxaDeAprendizado;
 
     public Rede(int numCamadas,ArrayList<Integer> numNeuronioCamada,int numEntradas,  int numCiclos) {
         this.numCamadas = numCamadas;
@@ -52,9 +51,8 @@ public class Rede {
         Neuronio neuronio;
         ArrayList<Camada> camadas = new ArrayList<>();
         for(i=0;i<this.numCamadas;i++){
+            //System.out.println("Camada:" + i);
             camada = new Camada();
-            
-            
             camada.setNumNeuronios(this.numNeuronioCamada.get(i));
             //System.out.println("aqui" + camada.getNumNeuronios());
             listNeuronio = new ArrayList<>();
@@ -383,7 +381,7 @@ public class Rede {
                                         bestErro = taxa_ErroPosAjuste;
                                         //System.out.println("Erro Antes: " + taxa_ErroAntes.getErroMedio() );
 					
-                                        //System.out.println("Erro Melhorado: " + bestErro.getErroMedio() );
+                                        System.out.println("Erro Melhorado: " + bestErro.getErroMedio() );
 					//Caso os pesos sao melhores, decrementa lambda (amortece o aprendizado) e inicia proximo ciclo.
 					lambda = lambda / v;
 					fimCiclo = true;

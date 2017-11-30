@@ -5,26 +5,20 @@
             <url>src/RedeNeural/Rede.java</url>
             <bookmark id="1">
                 <name/>
-                <line>280</line>
+                <line>285</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/PSO/Particula.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/PSO/PSO.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Dados/Dados.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/DadosNormalizados/DadosNormalizados.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/DadosNormalizados/InstanciaNormalizada.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Rede.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcGrafico/preProc.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/file/LeituraArquivo.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Dados/Instancia.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Erros/Erro.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Neuronio.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcGrafico/preProc.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/PSO/Exame.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcessameto/PreProcessaDados.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/ValidacaoCruzada/ValidacaoCruzada.java</file>
         </group>
     </open-files>

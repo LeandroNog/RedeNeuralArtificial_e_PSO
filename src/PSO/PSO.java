@@ -6,11 +6,16 @@ import DadosNormalizados.DadosNormalizados;
 import Erros.Erro;
 import RedeNeural.Rede;
 import file.LeituraArquivo;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import static java.lang.Math.log;
 import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import preProcessameto.PreProcessaDados;
 
 /**
@@ -24,7 +29,7 @@ public class PSO {
     Particula gBest = new Particula(); 
     int numCiclosPSO = 2;
     int minNumNeuronio=2;
-    int maxNumNeuronio=4;
+    int maxNumNeuronio=15;
     int minTaxaAprendizado;
     int maxTaxaAprendizado;
     int minNumCamadas=3;
@@ -53,7 +58,7 @@ public class PSO {
         Random random = new Random();
         double x;
         Particula part;
-        int numCiclosRede=1000;
+        int numCiclosRede=100;
       
         for(int i=0;i<numParticulas;i++){
             part = new Particula();
@@ -87,23 +92,24 @@ public class PSO {
         //	- numeros minimo e maximo de neuronios em cada camada;
         //	- dimensão máxima das particulas;
         //
-        
+        int numCamadas = 3;
         ArrayList<Integer> numNeuronios = new ArrayList();
         ArrayList<Double> velocidade = new ArrayList();
         // - Inicializar os valores das particulas (i = particula, j = elemento da particula):
         for(int i = 0; i < listParticulas.size(); i++){
             numNeuronios = new ArrayList();
             velocidade = new ArrayList();
-            for(int j = 0; j < 3; j++){
+            for(int j = 0; j < numCamadas-1; j++){
                 x =  random.nextDouble(); 
                 numNeuronios.add((this.getMinNumNeuronio()) + (int)((this.getMaxNumNeuronio()-this.getMinNumNeuronio()) * x));
             
             }   
-              for(int j = 0; j < 3; j++){
+              for(int j = 0; j < numCamadas-1; j++){
                 x = random.nextDouble(); 
                 velocidade.add((this.getMinNumNeuronio() + (this.getMaxNumNeuronio()-this.getMinNumNeuronio()) * x));
             }
           numNeuronios.add(1);
+          
           //.out.println(numNeuronios);
           listParticulas.get(i).setNumNeuroniosCamada(numNeuronios);
           listParticulas.get(i).setVelocidade(velocidade);
@@ -168,10 +174,13 @@ public class PSO {
                 gBest = listParticulas.get(i).copiaParticula();
                 gBest.setBestFun(listPBestParticulas.get(i).getBestFun());
                 System.out.println("GBest atualizado!: " +gBest.getBestFun());
+                System.out.println("\t NumNeuronios Primeira Camada:" + gBest.getNumNeuroniosCamada().get(0));
+                System.out.println("\t NumNeuronios Segunda Camada:" + gBest.getNumNeuroniosCamada().get(1));
+                bestRede = redePart.copiaRede();
             }
         }
         
-        for(int l = 0; l<1 ; l++){
+        for(int l = 0; l<numCiclosPSO ; l++){
             
         
         ArrayList newNumNerouniosCamadas = new ArrayList();
@@ -184,8 +193,9 @@ public class PSO {
 
              
             //Atualiza velocidade
-            for(int j = 0; j<3;j++ ){
-           
+            for(int j = 0; j<numCamadas-1;j++ ){
+                newNumNerouniosCamadas =new ArrayList();
+                newVelocidades = new ArrayList();
               
                //System.out.println(gBest.getNumNeuroniosCamada().get(j)  ) ;
               
@@ -200,12 +210,12 @@ public class PSO {
                 
                 
             }
-                 for(int j = 0; j<3;j++ ){
+                 for(int j = 0; j<numCamadas-1;j++ ){
                  listParticulas.get(i);
                  Double nn =(listParticulas.get(i).getNumNeuroniosCamada().get(j) +listParticulas.get(i).getVelocidade().get(j));
                  newNumNerouniosCamadas.add(nn.intValue());
              }
-        
+                 newNumNerouniosCamadas.add(1);
              listParticulas.get(i).setNumNeuroniosCamada(newNumNerouniosCamadas);
 
          }
@@ -225,6 +235,9 @@ public class PSO {
             if(listParticulas.get(i).getFun() < gBest.getBestFun()){
                 gBest = listParticulas.get(i).copiaParticula();
                 System.out.println("GBest atualziado!: " +gBest.getBestFun());
+                System.out.println("\t NumNeuronios Primeira Camada:" + gBest.getNumNeuroniosCamada().get(0));
+                System.out.println("\t NumNeuronios Segunda Camada:" + gBest.getNumNeuroniosCamada().get(1));
+                bestRede = redePart.copiaRede();
             }
         }
          
@@ -235,12 +248,54 @@ public class PSO {
         //Particula bestParticula = new Particula();
         //Inicia aleatoriamente todas particulas
         
-         
+        FileWriter arq;
+      
 
-        //----------------PSO--------------
-        //Determina qual particula eh a melhor
+     
+        //Salva melhor rede em arquivo
+        try {
+            arq = new FileWriter("bestRede.txt", false);
+            PrintWriter gravarArq = new PrintWriter(arq);
+            
+            
+            String linha;
         
-        //Corrige as particulas com base na melhor, go to passo 1
+                linha = String.valueOf("NumCamadas: " + bestRede.getNumCamadas() +
+                        "," + "NumCiclos: "+bestRede.getNumCiclos() + 
+                        "," + "NumEntradas: " + bestRede.getCamadas().get(0).getListNeuronios().get(0).getPesos().size()+
+                        "," + "Taxa de Aprendizado: " + bestRede.getTaxaDeAprendizado());
+
+                linha = linha + "\n" +"Numero de neuronios por camada: "+ bestRede.getNumNeuronioCamada().toString();
+                
+                
+                //Primeira camada
+         
+        for(int i = 0 ; i<bestRede.getNumNeuronioCamada().get(0) ; i++){
+            linha = linha + "\n";
+            for(int j = 0; j < dadosNormalizado.getNumAtributos(); j++){
+                linha = linha + String.valueOf(bestRede.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)) + ",";
+                
+            }
+      }
+        //Outras camadas
+        for(int c = 1; c<bestRede.getNumCamadas();c++){
+           for(int i = 0 ; i<bestRede.getNumNeuronioCamada().get(c) ; i++){
+            linha = linha + "\n";
+            for(int j = 0; j < bestRede.getNumNeuronioCamada().get(c-1); j++){
+                linha = linha + String.valueOf(bestRede.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)) + ",";
+                
+            }
+        }
+        }
+                gravarArq.printf(linha+"\n");
+        
+            
+            arq.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DadosNormalizados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
         
         return gBest;
     }
@@ -293,7 +348,9 @@ public class PSO {
         this.maxNumCamadas = maxNumCamadas;
     }
     
-    
+    void salvaRede(Rede rede){
+        
+    }
   
     
     
