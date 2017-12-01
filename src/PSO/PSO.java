@@ -6,6 +6,7 @@ import DadosNormalizados.DadosNormalizados;
 import Erros.Erro;
 import RedeNeural.Rede;
 import file.LeituraArquivo;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -54,11 +55,12 @@ public class PSO {
         this.numCiclosPSO = numCilos;
     }
     
-    public Particula executaPSO(){
+    public Rede executaPSO(DadosNormalizados dadosNormalizadoTrei,DadosNormalizados dadosNormalizadoValid,DadosNormalizados dadosNormalizadoTest, int num){
+        System.out.println("PSO execução número: " + String.valueOf(num));
         Random random = new Random();
         double x;
         Particula part;
-        int numCiclosRede=100;
+        int numCiclosRede=10;
       
         for(int i=0;i<numParticulas;i++){
             part = new Particula();
@@ -117,28 +119,10 @@ public class PSO {
           listPBestParticulas.set(i,listParticulas.get(i).copiaParticula()); //Funciona como copia?
         }
         
-       
-        
-        //Carrego os dados
-        String pathArquivo = "hora100.txt";
-        LeituraArquivo leituraArquivo = new LeituraArquivo();
-        
-        //Carrega dados sem normalizar
-        Dados dados = leituraArquivo.carregaDados(pathArquivo);
-        //dados.imprimeDataConsole();
-       //exit(1);
-        
-        PreProcessaDados preProcessaDados = new PreProcessaDados();
-        DadosNormalizados dadosNormalizado = preProcessaDados.normalizaDados(dados);
-        //dadosNormalizado.imprimeDataConsole();
 
-        //Embaralha instâncias aleatoriamente
-        Collections.shuffle(dadosNormalizado.getListInstancias());
-        
-        
-        Erro erro = new Erro();
-        
-        
+        Erro erroTrei = new Erro();
+        Erro erroValid = new Erro();
+        Erro erroTest = new Erro();
         //X[i][j] = j_min + ((j_max - j_min) * <sorteio de um valor aleatorio>) para toda particula;
         //
         // - Inicializar a velocidade da particula:
@@ -161,16 +145,17 @@ public class PSO {
         //	- O vetor Pbestfun[i] recebe o valor da funcao-objetivo da particula;
         //INICIALIZANDO...
         for(int i = 0;i<listParticulas.size();i++){
-            redePart = new Rede(3,listParticulas.get(i).getNumNeuroniosCamada(),dadosNormalizado.getNumAtributos(),  numCiclosRede);
+            redePart = new Rede(3,listParticulas.get(i).getNumNeuroniosCamada(),dadosNormalizadoTrei.getNumAtributos(),  numCiclosRede);
             redePart.inicializaRede();
             
-            erro = redePart.executaAprendizadoBackPropagation(dadosNormalizado);
-            listParticulas.get(i).setFun(erro.getRaizQuadradaErroMedioQuadratico());
-            listParticulas.get(i).setBestFun(erro.getRaizQuadradaErroMedioQuadratico());
+            erroTrei = redePart.executaAprendizadoBackPropagation(dadosNormalizadoTrei);
+            erroValid = redePart.executaTeste(dadosNormalizadoValid);
+            listParticulas.get(i).setFun(erroTrei.getErroMedio());
+            listParticulas.get(i).setBestFun(erroTrei.getErroMedio());
             
             listPBestParticulas.set(i, listParticulas.get(i).copiaParticula());
             
-            if(erro.getRaizQuadradaErroMedioQuadratico() < gBest.getBestFun()){
+            if(erroTrei.getErroMedio() < gBest.getBestFun()){
                 gBest = listParticulas.get(i).copiaParticula();
                 gBest.setBestFun(listPBestParticulas.get(i).getBestFun());
                 System.out.println("GBest atualizado!: " +gBest.getBestFun());
@@ -213,6 +198,12 @@ public class PSO {
                  for(int j = 0; j<numCamadas-1;j++ ){
                  listParticulas.get(i);
                  Double nn =(listParticulas.get(i).getNumNeuroniosCamada().get(j) +listParticulas.get(i).getVelocidade().get(j));
+                 if(nn<this.getMinNumCamadas()){
+                     nn = Double.valueOf(this.getMinNumCamadas());
+                 }
+                 if(nn>this.getMaxNumNeuronio()){
+                     nn = Double.valueOf(this.getMaxNumCamadas());
+                 }
                  newNumNerouniosCamadas.add(nn.intValue());
              }
                  newNumNerouniosCamadas.add(1);
@@ -222,11 +213,13 @@ public class PSO {
          
          
          for(int i = 0;i<listParticulas.size();i++){
-            redePart = new Rede(3,listParticulas.get(i).getNumNeuroniosCamada(),dadosNormalizado.getNumAtributos(),  numCiclosRede);
+            redePart = new Rede(3,listParticulas.get(i).getNumNeuroniosCamada(),dadosNormalizadoTrei.getNumAtributos(),  numCiclosRede);
             redePart.inicializaRede();
-            erro = redePart.executaAprendizadoBackPropagation(dadosNormalizado);
+            erroTrei = redePart.executaAprendizadoBackPropagation(dadosNormalizadoTrei);
+            erroValid = redePart.executaTeste(dadosNormalizadoValid);
+            //Executar teste com conjunto de validacao aqui
             
-            listParticulas.get(i).setFun(erro.getRaizQuadradaErroMedioQuadratico());
+            listParticulas.get(i).setFun(erroTrei.getErroMedio());
             if(listParticulas.get(i).getFun() < listParticulas.get(i).getBestFun()){
                 listParticulas.get(i).setBestFun(listParticulas.get(i).getFun() );
             }
@@ -245,59 +238,7 @@ public class PSO {
 
         }
         
-        //Particula bestParticula = new Particula();
-        //Inicia aleatoriamente todas particulas
-        
-        FileWriter arq;
-      
-
-     
-        //Salva melhor rede em arquivo
-        try {
-            arq = new FileWriter("bestRede.txt", false);
-            PrintWriter gravarArq = new PrintWriter(arq);
-            
-            
-            String linha;
-        
-                linha = String.valueOf("NumCamadas: " + bestRede.getNumCamadas() +
-                        "," + "NumCiclos: "+bestRede.getNumCiclos() + 
-                        "," + "NumEntradas: " + bestRede.getCamadas().get(0).getListNeuronios().get(0).getPesos().size()+
-                        "," + "Taxa de Aprendizado: " + bestRede.getTaxaDeAprendizado());
-
-                linha = linha + "\n" +"Numero de neuronios por camada: "+ bestRede.getNumNeuronioCamada().toString();
-                
-                
-                //Primeira camada
-         
-        for(int i = 0 ; i<bestRede.getNumNeuronioCamada().get(0) ; i++){
-            linha = linha + "\n";
-            for(int j = 0; j < dadosNormalizado.getNumAtributos(); j++){
-                linha = linha + String.valueOf(bestRede.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)) + ",";
-                
-            }
-      }
-        //Outras camadas
-        for(int c = 1; c<bestRede.getNumCamadas();c++){
-           for(int i = 0 ; i<bestRede.getNumNeuronioCamada().get(c) ; i++){
-            linha = linha + "\n";
-            for(int j = 0; j < bestRede.getNumNeuronioCamada().get(c-1); j++){
-                linha = linha + String.valueOf(bestRede.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)) + ",";
-                
-            }
-        }
-        }
-                gravarArq.printf(linha+"\n");
-        
-            
-            arq.close();
-        } catch (IOException ex) {
-            Logger.getLogger(DadosNormalizados.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        
-        
-        return gBest;
+        return bestRede;
     }
 
     public int getMinNumNeuronio() {
