@@ -51,7 +51,7 @@ public class ValidacaoCruzada {
         //Embaralha instâncias aleatoriamente
         Collections.shuffle(dadosNormalizado.getListInstancias());
         
-       // dadosNormalizado.imprimeDataConsole();
+        //dadosNormalizado.imprimeDataConsole();
        
         //Separa arquivos de teste e treinamento
         GravaArquivo grava = new GravaArquivo();
@@ -59,65 +59,72 @@ public class ValidacaoCruzada {
         
         ValidacaoCruzada v = new ValidacaoCruzada();
         //Separar em memoria principal, teste e treinamento
-        ArrayList <DadosNormalizados> testeTreinamento = v.separaTesteTreinamento(dadosNormalizado);
+        ArrayList<DadosNormalizados> testeTrein = new ArrayList<DadosNormalizados>();
+        ArrayList<DadosNormalizados> treinValid = new ArrayList<DadosNormalizados>();
         
+        testeTrein = v.separaTesteTreinamento(dadosNormalizado);
+
         //Retorna uma lista com 10 grupos - Treinamento esta no testeTreinamento[1]
         //ArrayList <DadosNormalizados> gruposValidacaoCruzada = v.separaTreinamento(testeTreinamento.get(1), k);
         
         //Imprime grupo da validação cruzada
         // gruposValidacaoCruzada.get(9).imprimeDataConsole();
         
-        
-        
-        ArrayList<Integer> numNeuronioCamada=new ArrayList<>();
-        numNeuronioCamada.add(8);
-        numNeuronioCamada.add(4);
-        numNeuronioCamada.add(1);
-        //Rede rede = new Rede(3,numNeuronioCamada,4, 10000);
-        //rede.inicializaRede();
-        Erro er;
-        Erro valid;
-        Erro test;
-       // Rede bestRede = rede.copiaRede();
-        Erro bestTeste;
-        Erro bestValid = null, bestTrein = null;
         k = 10;
+       /* ArrayList<Integer> ind = new ArrayList();
+        ind.add(8);
+        ind.add(4);
+        ind.add(1);
+        Rede teste11 = new Rede(3, ind, dadosNormalizado.getNumAtributos(),500 );
+        teste11.inicializaRede();
+        Erro eerr = teste11.executaAlgoritmodeAprendizado(v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(1));
+        Erro eerrValid = teste11.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0));
+        Erro eerrTest = teste11.executaTeste(testeTrein.get(0) );
+        
+        System.out.println("Treinamento: "+eerr.getErroMedio()+ "\nValidacao: " + eerrValid.getErroMedio() + "\nTeste: "+eerrTest.getErroMedio());
+        
        //rede.executaAprendizadoBackPropagation(v.separaTreinamentoGrupo(dadosNormalizado, 0).get(1));
-       
-       
-       
+      
+         
+        exit(1);
+*/
+  
+        
+        
+        
+        
+        
+        
+        
+        
+        
         PSO pso = new PSO();
-        
-        
-        
-        Rede bestRede, r2;
+
+        Rede bestRede=new Rede(), r2;
         int bestRedeIndice;
 
-        ArrayList<DadosNormalizados> testeTrein = new ArrayList<DadosNormalizados>();
-        ArrayList<DadosNormalizados> treinValid = new ArrayList<DadosNormalizados>();
         
-        testeTrein = v.separaTesteTreinamento(dadosNormalizado);
 
-        Erro bestErro;
+        Erro bestErro = new Erro();
         Erro erroTest;
+        Erro erroTrei;
         int indicep = 0;
-        Erro erro;
+        FileWriter arqLog;
+        Erro erroValid;
         bestRedeIndice = 0;
+        
+        
         for (l = 0; l<k;l++){ 
-            if(l == 0){
-                r2 = pso.executaPSO(v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(1),v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0),testeTrein.get(0), 0);
-                erro = r2.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0));
+            System.out.println("PSO execução número: " + String.valueOf(l));
+            r2 = pso.executaPSO(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(1),v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0),testeTrein.get(0));
+            erroValid = r2.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(0));
+            
+            if(l==0){
+                bestRede = r2.copiaRede();
+                bestRedeIndice = 0;
+                bestErro = erroValid;
             }
-            
-            
-            
-            
-            
-            
-            r2 = pso.executaPSO(v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(1),v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0),testeTrein.get(0), l);      
-            erro =  r2.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(0));
-            
-            
+
         //Salva rede
         
         FileWriter arq;
@@ -131,12 +138,12 @@ public class ValidacaoCruzada {
             
             String linha;
         
-                linha = String.valueOf("NumCamadas: " + bestRede.getNumCamadas() +
-                        "," + "NumCiclos: "+bestRede.getNumCiclos() + 
-                        "," + "NumEntradas: " + bestRede.getCamadas().get(0).getListNeuronios().get(0).getPesos().size()+
-                        "," + "Taxa de Aprendizado: " + bestRede.getTaxaDeAprendizado());
+                linha = String.valueOf("NumCamadas: " + r2.getNumCamadas() +
+                        "," + "NumCiclos: "+r2.getNumCiclos() + 
+                        "," + "NumEntradas: " + r2.getCamadas().get(0).getListNeuronios().get(0).getPesos().size()+
+                        "," + "Taxa de Aprendizado: " + r2.getTaxaDeAprendizado());
 
-                linha = linha + "\n" +"Numero de neuronios por camada: "+ bestRede.getNumNeuronioCamada().toString();
+                linha = linha + "\n" +"Numero de neuronios por camada: "+ r2.getNumNeuronioCamada().toString();
                 
                 
                 //Primeira camada
@@ -144,16 +151,16 @@ public class ValidacaoCruzada {
         for(int i = 0 ; i<r2.getNumNeuronioCamada().get(0) ; i++){
             linha = linha + "\n";
             for(int j = 0; j < dadosNormalizado.getNumAtributos(); j++){
-                linha = linha + String.valueOf(bestRede.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)) + ",";
+                linha = linha + String.valueOf(r2.getCamadas().get(0).getListNeuronios().get(i).getPesos().get(j)) + ",";
                 
             }
       }
         //Outras camadas
         for(int c = 1; c<r2.getNumCamadas();c++){
-           for(int i = 0 ; i<bestRede.getNumNeuronioCamada().get(c) ; i++){
+           for(int i = 0 ; i<r2.getNumNeuronioCamada().get(c) ; i++){
             linha = linha + "\n";
-            for(int j = 0; j < bestRede.getNumNeuronioCamada().get(c-1); j++){
-                linha = linha + String.valueOf(bestRede.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)) + ",";
+            for(int j = 0; j < r2.getNumNeuronioCamada().get(c-1); j++){
+                linha = linha + String.valueOf(r2.getCamadas().get(c).getListNeuronios().get(i).getPesos().get(j)) + ",";
                 
             }
         }
@@ -166,22 +173,18 @@ public class ValidacaoCruzada {
             Logger.getLogger(DadosNormalizados.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
-        
-        
-        
-        FileWriter arqLog;
-   
-     
+
         //Salva log em arquivo
         try {
-            arqLog = new FileWriter("logBestRede"+String.valueOf(l)+".txt", false);
+            arqLog = new FileWriter("logRede"+String.valueOf(l)+".txt", false);
             PrintWriter gravarArq = new PrintWriter(arqLog);
             
             
             String linha;
-            erroTrei = r2.executaTeste( v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(1));
-            erroTest = r2.executaTeste(dadosNormalizado);
+            erroTrei = r2.executaTeste( v.separaTreinamentoGrupo(testeTrein.get(1), l).get(1));
+            
+            erroValid = r2.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(0));
+            
             linha = String.valueOf("*************************REDE NEURAL MULTI-LAYER PERCEPTRON*************************\n");
             linha = linha + String.valueOf("Teste no Treinamento:\n");
             linha = linha + String.valueOf("Erro médio: " + erroTrei.getErroMedio() + "\n"
@@ -196,16 +199,7 @@ public class ValidacaoCruzada {
                                     + "Coeficiente de Determinação: " + erroValid.getCoeficienteDeDeterminacao()  + "\n"
                                     + "Raiz quadrada do erro médio quadrático: " + erroValid.getRaizQuadradaErroMedioQuadratico() + "\n"
                                     + "Variância: " + erroValid.getVariancia() + "\n"+ "\n");
-           
-            linha = linha + String.valueOf("Teste no Teste:\n");
-            linha = linha + String.valueOf("Erro médio: " + erroTest.getErroMedio() + "\n"
-                                    + "Desvio padrão: " + erroTest.getDesvioPadrao() + "\n"
-                                    + "Coeficiente de Determinação: " + erroTest.getCoeficienteDeDeterminacao()  + "\n"
-                                    + "Raiz quadrada do erro médio quadrático: " + erroTest.getRaizQuadradaErroMedioQuadratico() + "\n"
-                                    + "Variância: " + erroTest.getVariancia() );
-            
-        
-        
+
          gravarArq.printf(linha+"\n");
         
             
@@ -213,31 +207,48 @@ public class ValidacaoCruzada {
         } catch (IOException ex) {
             Logger.getLogger(DadosNormalizados.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
-        
-        
-        
-        
-        
-       
-        
-            
-            
+ 
             
             
             //Define melhor rede
-            if(bestErro.getErroMedio()>erro.getErroMedio()){
+            if(erroValid.getErroMedio()<bestErro.getErroMedio()){
                 bestRede = r2;
                 bestRedeIndice = l;
+                bestErro = erroValid;
             }
+        }
+
+        //Testa melhor rede e salva em arquivo
+        //Salva log em arquivo
+        try {
+            arqLog = new FileWriter("logBestRede"+String.valueOf(l)+".txt", false);
+            PrintWriter gravarArq = new PrintWriter(arqLog);
+            
+            
+            String linha;
+            erroTest = bestRede.executaTeste(testeTrein.get(0));
+            
+            linha = String.valueOf("*************************REDE NEURAL MULTI-LAYER PERCEPTRON*************************\n");
+            linha = linha + "Best Rede:"  + String.valueOf(bestRedeIndice);
+            linha = linha + String.valueOf("Erro no conjunto de teste:\n");
+            linha = linha + String.valueOf("Erro médio: " + erroTest.getErroMedio() + "\n"
+                                    + "Desvio padrão: " + erroTest.getDesvioPadrao() + "\n"
+                                    +  "Coeficiente de Determinação: " + erroTest.getCoeficienteDeDeterminacao()  + "\n"
+                                    + "Raiz quadrada do erro médio quadrático: " + erroTest.getRaizQuadradaErroMedioQuadratico() + "\n"
+                                    + "Variância: " + erroTest.getVariancia());
+            
+         gravarArq.printf(linha);
+        
+            
+            arqLog.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DadosNormalizados.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
         
-        //Fazer teste e gravar melhor rede
         System.out.println("Melhor rede: " +  String.valueOf(bestRedeIndice));
-        
-        
+
     }
     
     

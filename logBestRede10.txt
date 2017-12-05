@@ -1,0 +1,7 @@
+*************************REDE NEURAL MULTI-LAYER PERCEPTRON*************************
+Best Rede:7Erro no conjunto de teste:
+Erro médio: 0.18155168098943178
+Desvio padrão: 0.3492086190359538
+Coeficiente de Determinação: 0.6077629283717428
+Raiz quadrada do erro médio quadrático: 0.21870528265197714
+Variância: 0.12194665960899792

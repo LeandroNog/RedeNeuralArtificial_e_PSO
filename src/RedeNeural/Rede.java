@@ -36,6 +36,10 @@ public class Rede {
         this.taxaDeAprendizado = 0.5;
 
     }
+
+    public Rede() {
+    }
+    
     //verificar se tá correto
     public void inicializaRede(){
         //Inicia rede com pesos aleatórios
@@ -201,7 +205,7 @@ public class Rede {
         
         Erro bestErro = new Erro();
         
-        double lambda = 0.000001;
+        double lambda = 0.00001;
         double maxLambda = 10;
         double v = 1.2;
         double identidadexLambda[][];

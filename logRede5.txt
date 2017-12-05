@@ -1,0 +1,16 @@
+*************************REDE NEURAL MULTI-LAYER PERCEPTRON*************************
+Teste no Treinamento:
+Erro médio: 0.18808428549346212
+Desvio padrão: 0.3348323814785699
+Coeficiente de Determinação: 0.5723504015829877
+Raiz quadrada do erro médio quadrático: 0.21896337881485226
+Variância: 0.11211272368661057
+
+Teste na Validação:
+Erro médio: 0.1754870681475184
+Desvio padrão: 0.34840816487663606
+Coeficiente de Determinação: 0.6249157689420812
+Raiz quadrada do erro médio quadrático: 0.21337951674874123
+Variância: 0.12138824935270522
+
+
