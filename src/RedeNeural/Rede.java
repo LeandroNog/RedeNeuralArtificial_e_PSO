@@ -33,7 +33,7 @@ public class Rede {
         this.camadas = new ArrayList<Camada>();
         this.numNeuronioCamada = numNeuronioCamada; 
         this.numEntradas = numEntradas;
-        this.taxaDeAprendizado = 0.5;
+        this.taxaDeAprendizado = 0.6;
 
     }
 

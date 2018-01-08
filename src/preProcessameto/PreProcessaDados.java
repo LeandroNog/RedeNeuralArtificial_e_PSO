@@ -117,7 +117,7 @@ public class PreProcessaDados {
         //dados.setListInstancias(newListInstancias);
         //dados.setNumInstancias(newListInstancias.size());
         dadosNorm.setNumInstancias(dados.getNumInstancias());
-        dadosNorm.setNumAtributos(dados.getNumAtributos()+1); //timestamp vira dois atributos
+        dadosNorm.setNumAtributos(dados.getNumAtributos()); //timestamp vira dois atributos
         //atualiza num instancias
         //dados.imprimeDataConsole();
         //dados.imprimeDataArquivo(dados, 25);
@@ -135,7 +135,7 @@ public class PreProcessaDados {
              for(j=0;j<dados.getNumAtributos();j++){
                  atribNorm = new AtributoNormalizado();
 
-                 if(j==1){ 
+                /* if(j==1){ 
                     //Converte timestamp pra hora e dia da semana
                     String dateAsText = new SimpleDateFormat("HH:mm:ss:EEE")
                             .format(new Date( (long) (dados.getListInstancias().get(i).getListAtributos().get(j).getValor()* 1000L)) );
@@ -153,14 +153,14 @@ public class PreProcessaDados {
                              
 
                  }
-                 else{
+                 else{*/
                     atribNorm.setValor(dados.getListInstancias().get(i).getListAtributos().get(j).getValor());
                     instNorm.getListAtributos().add(atribNorm);
-                 }
+                 //}
   
                  
              }     
-             double valorAtrib = 0.0;
+            /* double valorAtrib = 0.0;
              atribDia = new AtributoNormalizado();
                         
              if(splitValues[3].equals("Dom")){
@@ -187,7 +187,7 @@ public class PreProcessaDados {
              }
 
              atribDia.setValor(valorAtrib);
-             instNorm.getListAtributos().add(atribDia);
+             instNorm.getListAtributos().add(atribDia);*/
              dadosNorm.getListInstancias().add(instNorm);
   
         
@@ -199,7 +199,7 @@ public class PreProcessaDados {
         
          //Consegue maior atributo 2
                
-               int l, m;
+             /*  int l, m;
                double maior1 = 0.0;
                double maior2 = 0.0;
                for(l=0;l<dadosNorm.getNumInstancias();l++){
@@ -239,14 +239,14 @@ public class PreProcessaDados {
                        }
                         dataNormalizado.getListInstancias().add(instNorm);
                    
-               }
+               }*/
               
     
         //dataNormalizado.imprimeDataConsole
      
-        //dadosNorm.imprimeDataConsole();
+        dadosNorm.imprimeDataConsole();
         
-        return dataNormalizado;
+        return dadosNorm;
         
         
     }

@@ -35,8 +35,8 @@ public class ValidacaoCruzada {
 
         int l, k=1;
        
-        //Carrego os dados
-        String pathArquivo = "hora100.txt";
+       /* //Carrego os dados
+        String pathArquivo = "norm0a2_trainvalid.txt";
         LeituraArquivo leituraArquivo = new LeituraArquivo();
         
         //Carrega dados sem normalizar
@@ -62,7 +62,7 @@ public class ValidacaoCruzada {
         ArrayList<DadosNormalizados> testeTrein = new ArrayList<DadosNormalizados>();
         ArrayList<DadosNormalizados> treinValid = new ArrayList<DadosNormalizados>();
         
-        testeTrein = v.separaTesteTreinamento(dadosNormalizado);
+        //testeTrein = v.separaTesteTreinamento(dadosNormalizado);
 
         //Retorna uma lista com 10 grupos - Treinamento esta no testeTreinamento[1]
         //ArrayList <DadosNormalizados> gruposValidacaoCruzada = v.separaTreinamento(testeTreinamento.get(1), k);
@@ -89,17 +89,10 @@ public class ValidacaoCruzada {
         exit(1);
 */
   
-        
-        
-        
-        
-        
-        
-        
-        
+
         
         PSO pso = new PSO();
-
+/*
         Rede bestRede=new Rede(), r2;
         int bestRedeIndice;
 
@@ -114,7 +107,7 @@ public class ValidacaoCruzada {
         bestRedeIndice = 0;
         
         
-        for (l = 0; l<k;l++){ 
+        for (l = 0; l<5;l++){ 
             System.out.println("PSO execução número: " + String.valueOf(l));
             r2 = pso.executaPSO(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(1),v.separaTreinamentoGrupo(testeTrein.get(1), 0).get(0),testeTrein.get(0));
             erroValid = r2.executaTeste(v.separaTreinamentoGrupo(testeTrein.get(1), l).get(0));
@@ -345,9 +338,9 @@ public class ValidacaoCruzada {
         
         listDados.add(dadosNorm);
        }
-       
+       */
 
-        return listDados;
+       // return listDados;
 
         
         

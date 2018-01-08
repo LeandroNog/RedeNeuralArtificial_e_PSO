@@ -18,9 +18,13 @@
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/DadosNormalizados/DadosNormalizados.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/DadosNormalizados/InstanciaNormalizada.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/RedeNeural/Rede.java</file>
-            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcGrafico/preProc.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/file/LeituraArquivo.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Dados/Instancia.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Erros/Erro.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcGrafico/preProc.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/preProcessameto/PreProcessaDados.java</file>
             <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/ValidacaoCruzada/ValidacaoCruzada.java</file>
+            <file>file:/home/leandro/NetBeansProjects/PacoteTecnicasIA/src/Dados/Atributo.java</file>
         </group>
     </open-files>
 </project-private>

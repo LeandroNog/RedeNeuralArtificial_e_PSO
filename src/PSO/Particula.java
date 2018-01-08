@@ -13,51 +13,12 @@ import java.util.ArrayList;
  * @author leandro
  */
 public class Particula {
-    
-    ArrayList<Integer> numNeuroniosCamada;
-
-    double taxaAprendizado;
     ArrayList<Double> velocidade;
-    //Fixar numero de camadas fica mais simples, ai eh só testar o PSO com 1, 2, 3, 4 e 5 camadas
-    double numCamadas;
-    int numeroDeCiclos;
+    ArrayList<Double> pesoRede;
+   
     
-    double bestFun=100.0;
+    double bestFun= 0.0;
     double fun = 0.0;
-
-    public ArrayList<Integer> getNumNeuroniosCamada() {
-        return numNeuroniosCamada;
-    }
-
-    public void setNumNeuroniosCamada(ArrayList<Integer> numNeuroniosCamada) {
-        this.numNeuroniosCamada = numNeuroniosCamada;
-    }
-
- 
-
-    public double getTaxaAprendizado() {
-        return taxaAprendizado;
-    }
-
-    public void setTaxaAprendizado(double taxaAprendizado) {
-        this.taxaAprendizado = taxaAprendizado;
-    }
-
-    public double getNumCamadas() {
-        return numCamadas;
-    }
-
-    public void setNumCamadas(double numCamadas) {
-        this.numCamadas = numCamadas;
-    }
-
-    public int getNumeroDeCiclos() {
-        return numeroDeCiclos;
-    }
-
-    public void setNumeroDeCiclos(int numeroDeCiclos) {
-        this.numeroDeCiclos = numeroDeCiclos;
-    }
 
     public ArrayList<Double> getVelocidade() {
         return velocidade;
@@ -87,13 +48,16 @@ public class Particula {
         Particula copy = new Particula();
         copy.setBestFun(this.getBestFun());
         copy.setFun(this.getFun());
-        copy.setNumCamadas(this.getNumCamadas());
-        copy.setNumNeuroniosCamada(this.getNumNeuroniosCamada());
-        copy.setNumeroDeCiclos(this.getNumeroDeCiclos());
-        copy.setTaxaAprendizado(this.getTaxaAprendizado());
         copy.setVelocidade(this.getVelocidade());
-        return copy;
-            
+        return copy; 
+    }
+
+    public ArrayList<Double> getPesoRede() {
+        return pesoRede;
+    }
+
+    public void setPesoRede(ArrayList<Double> pesoRede) {
+        this.pesoRede = pesoRede;
     }
     
     
