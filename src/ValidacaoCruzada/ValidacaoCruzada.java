@@ -92,6 +92,7 @@ public class ValidacaoCruzada {
 
         
         PSO pso = new PSO();
+        pso.executaPSO();
 /*
         Rede bestRede=new Rede(), r2;
         int bestRedeIndice;

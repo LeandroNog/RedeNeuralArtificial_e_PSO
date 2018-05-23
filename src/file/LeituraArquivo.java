@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import static java.lang.System.exit;
 import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,12 +73,14 @@ public class LeituraArquivo {
   
                   
             while (linha != null ) {  
+                //System.out.println(linha);
                 string = linha.split(",");
-                data.setNumAtributos(string.length-2); // - nome
-                string = linha.split(",");
+               
+                data.setNumAtributos(string.length-1); // - nome
+               
                 inst = new Instancia();
-                inst.setNome(string[0]);
-                for(int i=1; i < string.length; i++){ //- 1 - classe, peso 
+                //System.out.println(string[string.length - 1]);
+                for(int i=0; i < string.length; i++){ //- 1 - classe, peso 
                     if(i==(string.length - 1)){
                          inst.setEsperado(Double.parseDouble(string[i]));
                     }
@@ -105,7 +108,8 @@ public class LeituraArquivo {
                     System.out.println("Falha ao tentar abrir arquivo");
 
               }
-        
+        //data.imprimeDataConsole();
+       
         return data;
     }
         

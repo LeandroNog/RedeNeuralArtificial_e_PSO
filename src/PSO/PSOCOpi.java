@@ -1,6 +1,10 @@
 
 package PSO;
 
+public class PSOCOpi {
+    /* 
+package PSO;
+
 import Dados.Atributo;
 import Dados.Dados;
 import Dados.Instancia;
@@ -25,14 +29,14 @@ import preProcessameto.PreProcessaDados;
 /**
  *
  * @author leandro
- */
+ 
 public class PSO {
     
     ArrayList<Particula> listParticulas = new ArrayList();;
     ArrayList<Particula> listPBestParticulas = new ArrayList();;
     Particula gBest = new Particula(); 
     int numCiclosPSO = 1000;
-    double minPeso = 0;
+    double minPeso = -1;
     double maxPeso = 1;
     
     
@@ -62,7 +66,7 @@ public class PSO {
         listParticulas = new ArrayList();;
         listPBestParticulas = new ArrayList();;
         int NUMREDES = 3;
-         int limite = 100; 
+         int limite = 5; 
          int limiteUns = 80; 
         Random random = new Random();
         double x;
@@ -146,7 +150,7 @@ public class PSO {
         Dados teste = leituraArquivo.carregaDados(pathArquivo8);
        
        
-        
+        int numErroMaster = 0;
         for(int i = 0;i<listParticulas.size();i++){
             
 //atualiza medias de todos dados
@@ -161,7 +165,7 @@ public class PSO {
                             dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -219,7 +223,7 @@ public class PSO {
                             dados4.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -242,7 +246,7 @@ public class PSO {
                             dados5.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -265,7 +269,7 @@ public class PSO {
                             dados6.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -286,7 +290,7 @@ public class PSO {
                             dados7.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -305,7 +309,7 @@ public class PSO {
                             teste.getListInstancias().get(j).getListAtributos().get(l).getValor();
                     
                     /*media = media + listParticulas.get(i).getPesoRede().get(l)*
-                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();*/
+                            dados1.getListInstancias().get(j).getListAtributos().get(l).getValor();
                 }
                 //media = media/5;
                 Atributo atrib = new Atributo();
@@ -380,79 +384,91 @@ public class PSO {
             int numErrod6 = 0;
             int numErrod7 = 0;
             int numErrod8 = 0;
-            for(int m = 0; m < limite;m++){
-                if(dados1.getListInstancias().get(m).getEsperado()==1){
-                    numErrod1 = numErrod1 + (100-m);
+            numErroMaster = 0;
+            for(int m = 30; m > 10; m--){
+                if(dados1.getListInstancias().get(m).getEsperado()!=1){
+                    //numErrod1 = numErrod1 + (100-m);
+                    numErrod1++;
                     erroC++;
                 }
             }
-              for(int m = 0; m < limite;m++){
-                if(dados2.getListInstancias().get(m).getEsperado()==1){
-                   numErrod2 = numErrod2 + (100-m);
+            if(numErrod1>14){
+                numErroMaster++;
+            }
+             for(int m = 30; m > 10; m--){
+                if(dados2.getListInstancias().get(m).getEsperado()!=1){
+                   //numErrod2 = numErrod2 + (100-m);
+                   numErrod2++;
                     erroC++;
                 }
             }
-           for(int m = 0; m < limite;m++){
-                if(dados3.getListInstancias().get(m).getEsperado()==1){
-                   numErrod3 = numErrod3 + (100-m);;
+              if(numErrod2>14){
+                numErroMaster++;
+            }
+            for(int m = 30; m > 10; m--){
+                if(dados3.getListInstancias().get(m).getEsperado()!=1){
+                   numErrod3++;
                     erroC++;
                 }
             }
-             for(int m = 0; m < limite;m++){
-                if(dados4.getListInstancias().get(m).getEsperado()==1){
-                   numErrod4 = numErrod4 + (100-m);;
+            if(numErrod3>14){
+                numErroMaster++;
+            }
+             for(int m = 30; m > 10; m--){
+                if(dados4.getListInstancias().get(m).getEsperado()!=1){
+                   numErrod4++;
                     erroC++;
                 }
             }
-               for(int m = 0; m < limite;m++){
-                if(dados5.getListInstancias().get(m).getEsperado()==1){
-                   numErrod5 = numErrod5 + (100-m);;
+             if(numErrod4>14){
+                numErroMaster++;
+            }
+                for(int m = 30; m > 10; m--){
+                if(dados5.getListInstancias().get(m).getEsperado()!=1){
+                   numErrod5++;
                     erroC++;
                 }
             }
-                 for(int m = 0; m < limite;m++){
-                if(dados6.getListInstancias().get(m).getEsperado()==1){
-                   numErrod6 = numErrod6 + (100-m);;
+               if(numErrod5>14){
+                numErroMaster++;
+            }
+               for(int m = 30; m > 10; m--){
+                if(dados6.getListInstancias().get(m).getEsperado()!=1){
+                   numErrod6++;
                     erroC++;
                 }
             }
-                   for(int m = 0; m < limite;m++){
-                if(dados7.getListInstancias().get(m).getEsperado()==1){
-                   numErrod7 = numErrod7 + (100-m);
+           if(numErrod6>14){
+                numErroMaster++;
+            }
+               for(int m = 30; m > 10; m--){
+                if(dados7.getListInstancias().get(m).getEsperado()!=1){
+                   numErrod7++;
                     erroC++;
                 }
             }
-                   
-           for(int m = 0; m < limite;m++){
-                if(teste.getListInstancias().get(m).getEsperado()==1){
-                   numErrod8 = numErrod8 + (100-m);
+            if(numErrod7>14){
+                numErroMaster++;
+            }
+           for(int m = 30; m > 10; m--){
+                if(teste.getListInstancias().get(m).getEsperado()!=1){
+                    numErrod8++;
+                   //numErrod2++;
                     
                 }
             }
           
            
-           /*
-            for(int m = dados1.getListInstancias().size() - 1; m > limiteUns; m--){
-                if(dados1.getListInstancias().get(m).getEsperado()==0){
-                    //numErro++;
-                    erroB++;
-                }
-            }
-              for(int m = dados2.getListInstancias().size() - 1; m > limiteUns; m--){
-                if(dados2.getListInstancias().get(m).getEsperado()==0){
-                   // numErro++;
-                    erroB++;
-                }
-           }
-            */
            
-            listParticulas.get(i).setFun(numErrod1 + numErrod2 +numErrod3 +numErrod4+
+           
+            /*listParticulas.get(i).setFun(numErrod1 + numErrod2 +numErrod3 +numErrod4+
            numErrod5 + numErrod6+ numErrod7);
+            listParticulas.get(i).setFun(numErroMaster);
             if(listParticulas.get(i).getFun() < listParticulas.get(i).getBestFun()){
                 listParticulas.get(i).setBestFun(listParticulas.get(i).getFun());
                 listPBestParticulas.set(i,listParticulas.get(i).copiaParticula()); 
             }
-            if(listParticulas.get(i).getFun() < gBest.getBestFun()){
+            if(listParticulas.get(i).getFun() < gBest.getBestFun() && ((c==0) ||numErrod8<14)){
                 System.out.println("GBest atualizado, de " + gBest.getBestFun()+ "para"+ listParticulas.get(i).getFun());
                 
                 gBest = listParticulas.get(i).copiaParticula();
@@ -573,4 +589,5 @@ public class PSO {
 
  
     
+}*/
 }

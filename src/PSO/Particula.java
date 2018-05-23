@@ -17,8 +17,8 @@ public class Particula {
     ArrayList<Double> pesoRede;
    
     
-    double bestFun= 0.0;
-    double fun = 0.0;
+    double bestFun= 10000000.0;
+    double fun = 10000000.0;
 
     public ArrayList<Double> getVelocidade() {
         return velocidade;
@@ -49,6 +49,7 @@ public class Particula {
         copy.setBestFun(this.getBestFun());
         copy.setFun(this.getFun());
         copy.setVelocidade(this.getVelocidade());
+        copy.setPesoRede(this.pesoRede);
         return copy; 
     }
 

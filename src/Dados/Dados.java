@@ -56,11 +56,12 @@ public class Dados {
         
         String linha;
          for(int i = 0; i < this.numInstancias; i++){
-             linha = this.getListInstancias().get(i).getNome() + ", ";
+             linha = "";
              
-            for(int j = 0; j < this.numAtributos; j++){
+            for(int j = 0; j < 6; j++){
                  linha = linha + String.valueOf(this.getListInstancias().get(i).getListAtributos().get(j).getValor()) + " , ";
             }
+            linha = linha + String.valueOf(this.getListInstancias().get(i).getEsperado());
              System.out.println(linha);
         
            }
